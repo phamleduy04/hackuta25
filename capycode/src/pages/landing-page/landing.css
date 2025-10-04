@@ -26,14 +26,18 @@
 .nav-logo {
   font-size: 2rem;
   font-weight: 100;
-  color: #efeef5;
   text-decoration: none;
   letter-spacing: 0.15em;
-  transition: opacity 0.3s;
+  transition: all 0.3s;
+  background: linear-gradient(90deg, #efeef5 0%, #c5c5d5 50%, #efeef5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 100%;
 }
 
 .nav-logo:hover {
-  opacity: 0.8;
+  background-position: 100% 0%;
 }
 
 .nav-cta {
@@ -100,11 +104,11 @@
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #efeef5 0%, #9d9da5 50%, #efeef5 100%);
+  background: linear-gradient(135deg, #efeef5 0%, #b8b8c5 25%, #9d9da5 50%, #b8b8c5 75%, #efeef5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradient-shift 8s ease infinite;
+  animation: gradient-shift 10s ease infinite;
   background-size: 200% 200%;
 }
 
@@ -155,6 +159,12 @@
   letter-spacing: 0.05em;
   margin-bottom: 3rem;
   text-align: center;
+  background: linear-gradient(135deg, #efeef5 0%, #b8b8c5 30%, #9d9da5 50%, #b8b8c5 70%, #efeef5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 8s ease infinite;
+  background-size: 200% 200%;
 }
 
 .section-description {
@@ -421,6 +431,24 @@
   letter-spacing: 0.03em;
   margin-bottom: 1.5rem;
   line-height: 1.2;
+  background: linear-gradient(120deg, #efeef5 0%, #a5a5b5 35%, #8d8d9d 50%, #a5a5b5 65%, #efeef5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift-fast 6s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradient-shift-fast {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .cta-subtitle {
@@ -1126,6 +1154,10 @@
   letter-spacing: 0.15em;
   color: #efeef5;
   margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #efeef5 0%, #b8b8c5 50%, #efeef5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footer-tagline {

@@ -78,8 +78,8 @@ export default function Dashboard() {
         </header>
         <div className="ld-progress glass" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100}>
           <div className="bar" style={{ width: `${progressPct}%` }} />
-          <div className="meta">{completedCount} finished • {courses.length} total ({progressPct}%)</div>
         </div>
+        <div className="meta">{completedCount} finished • {courses.length} total ({progressPct}%)</div>
 
         {active === "modules" && (
           <section className="ld-section">
