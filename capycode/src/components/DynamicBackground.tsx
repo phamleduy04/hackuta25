@@ -12,3 +12,5 @@ const DynamicBackground: React.FC<SilkProps> = (props) => {
 };
 
 export default DynamicBackground;
+
+

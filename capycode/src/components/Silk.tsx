@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useLayoutEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-// when TypeScript types for 'three' are not installed this falls back to any
 import type { RootState } from "@react-three/fiber";
 
 type NormalizedRGB = [number, number, number];
@@ -118,7 +117,6 @@ void main() {
   vec2  tex        = uv * uScale;
   float tOffset    = uSpeed * uTime;
 
-  // Lower frequency for fewer, larger waves
   tex.y += 0.03 * sin(2.0 * tex.x - tOffset);
 
   float pattern = 0.6 +
@@ -147,7 +145,7 @@ const Silk: React.FC<SilkProps> = ({
       uSpeed: { value: speed },
       uScale: { value: scale },
       uNoiseIntensity: { value: noiseIntensity },
-  uColor: { value: new THREE.Color(...hexToNormalizedRGB(color)) },
+      uColor: { value: new THREE.Color(...hexToNormalizedRGB(color)) },
       uRotation: { value: rotation },
       uTime: { value: 0 },
     }),
@@ -162,3 +160,5 @@ const Silk: React.FC<SilkProps> = ({
 };
 
 export default Silk;
+
+
