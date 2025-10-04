@@ -1,27 +1,18 @@
-import {
-    SandpackProvider,
-    SandpackLayout,
-    SandpackCodeEditor,
-    SandpackPreview,
-    SandpackFileExplorer,
-} from "@codesandbox/sandpack-react";
+
+import CodeEditor from "./code-editor";
+import { VoiceProvider } from "@/contexts/voice-context";
 
 export default function Code() {
-    const files = {}
+
+    const files = {
+        '/Wrapper.js': `export default () => "";`,
+    }
 
     return (
-        <div className="h-full w-full">
-            <SandpackProvider
-                files={files}
-                theme="dark"
-                template="angular"
-            >
-                <SandpackLayout>
-                    <SandpackFileExplorer />
-                    <SandpackCodeEditor closableTabs showTabs />
-                    <SandpackPreview />
-                </SandpackLayout>
-            </SandpackProvider>
-        </div>
+        <VoiceProvider>
+            <div className="h-screen w-full min-h-screen">
+                <CodeEditor files={files} />
+            </div>
+        </VoiceProvider>
     )
 }
