@@ -61,188 +61,395 @@ const LandingPage: React.FC = () => {
         <section className="landing-section hero-section" ref={addToRefs}>
           <div className="hero-content">
             <h1 className="hero-title">
-              Master Coding with an
-              <span className="gradient-text"> AI Coach</span>
+              Never Get Stuck
+              <span className="gradient-text"> Learning to Code Again</span>
             </h1>
             <p className="hero-subtitle">
-              Interactive learning platform powered by ElevenLabs voice guidance and Gemini code intelligence
+              A live AI coach that talks you through every challenge, catches when you're stuck, and guides you to solutions without doing the work for you
             </p>
             <button
               className="hero-cta"
               onClick={() => { void navigate("/dashboard"); }}
             >
-              Start Your Journey
+              Start Building Now — Free
             </button>
           </div>
         </section>
 
-        {/* Features Overview */}
-        <section className="landing-section features-section" ref={addToRefs}>
-          <h2 className="section-title">Platform Features</h2>
-          <div className="features-grid">
-            <GlassCard title="Voice-Guided Learning">
-              <p>
-                ElevenLabs text-to-speech integration provides real-time vocal guidance
-                as you work through coding challenges and modules.
-              </p>
-            </GlassCard>
-            <GlassCard title="AI Code Review">
-              <p>
-                Gemini API analyzes your code for quality, complexity, and best practices,
-                providing actionable feedback and improvement suggestions.
-              </p>
-            </GlassCard>
-            <GlassCard title="Interactive Sandbox">
-              <p>
-                Dual-screen environment with a live code editor on the left and instant
-                preview rendering on the right for immediate feedback.
-              </p>
-            </GlassCard>
-            <GlassCard title="Module-Based Curriculum">
-              <p>
-                Structured learning path where each module unlocks task-specific editors
-                with progressive difficulty and skill building.
-              </p>
-            </GlassCard>
+        {/* Problem Section - NEW */}
+        <section className="landing-section problem-section" ref={addToRefs}>
+          <div className="problem-container">
+            <h2 className="section-title">You're Not Alone in Feeling Stuck</h2>
+            <div className="problem-grid">
+              <div className="problem-card">
+                <div className="problem-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="6" y="4" width="4" height="16" />
+                    <rect x="14" y="4" width="4" height="16" />
+                  </svg>
+                </div>
+                <h3>Hit a wall and don't know where to look</h3>
+                <p>Error messages don't make sense, documentation is confusing, and tutorials skip the parts you need</p>
+              </div>
+              <div className="problem-card">
+                <div className="problem-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                  </svg>
+                </div>
+                <h3>Spend hours googling instead of coding</h3>
+                <p>Stack Overflow answers don't match your situation, and forum replies take days if they come at all</p>
+              </div>
+              <div className="problem-card">
+                <div className="problem-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+                <h3>Start doubting if coding is for you</h3>
+                <p>Every obstacle feels like proof you're not cut out for this, so you close the laptop and give up</p>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Coding Coach Section */}
-        <section className="landing-section coach-section" ref={addToRefs}>
-          <div className="section-content-split">
-            <div className="content-left">
-              <h2 className="section-title">Your Personal Coding Coach</h2>
-              <div className="feature-list">
-                <div className="feature-item">
-                  <div className="feature-marker"></div>
-                  <div>
-                    <h3>Editor with Rendered Content</h3>
-                    <p>Write code and see results instantly in a split-view interface</p>
-                  </div>
-                </div>
-                <div className="feature-item">
-                  <div className="feature-marker"></div>
-                  <div>
-                    <h3>Best Practice Recommendations</h3>
-                    <p>Learn industry-standard patterns and clean code principles</p>
-                  </div>
-                </div>
-                <div className="feature-item">
-                  <div className="feature-marker"></div>
-                  <div>
-                    <h3>Help When You Need It</h3>
-                    <p>Dedicated help button provides contextual assistance when stuck</p>
-                  </div>
-                </div>
-                <div className="feature-item">
-                  <div className="feature-marker"></div>
-                  <div>
-                    <h3>Interactive Questions</h3>
-                    <p>Dynamic feedback system keeps you engaged and learning actively</p>
-                  </div>
+        {/* Solution Overview - REWORKED */}
+        <section className="landing-section solution-section" ref={addToRefs}>
+          <div className="solution-hero">
+            <h2 className="section-title">What If You Had a Coach Right Next to You?</h2>
+            <p className="solution-subtitle">
+              That's exactly what CapyCode gives you. An AI mentor that watches your progress, 
+              speaks to you in real-time, and guides you through challenges the moment they happen.
+            </p>
+          </div>
+          <div className="solution-visual-container">
+            <div className="mascot-float">
+              <img src="/assets/curious_capybara.png" alt="CapyCode Mascot" className="mascot-image" />
+            </div>
+            <div className="workspace-preview">
+              <div className="preview-section code-section">
+                <div className="section-label">Your Code</div>
+                <div className="code-lines">
+                  <div className="code-line"></div>
+                  <div className="code-line short"></div>
+                  <div className="code-line"></div>
+                  <div className="code-line medium"></div>
                 </div>
               </div>
-            </div>
-            <div className="content-right">
-              <div className="glass-panel">
-                <div className="panel-header">Coding Environment</div>
-                <div className="panel-body">
-                  <div className="code-preview-layout">
-                    <div className="layout-box editor-box">
-                      <span>Code Editor</span>
-                    </div>
-                    <div className="layout-box preview-box">
-                      <span>Live Preview</span>
-                    </div>
-                    <div className="layout-box feedback-box">
-                      <span>AI Feedback</span>
-                    </div>
-                  </div>
+              <div className="preview-section result-section">
+                <div className="section-label">Live Preview</div>
+                <div className="preview-box">
+                  <div className="preview-element"></div>
+                </div>
+              </div>
+              <div className="preview-section coach-section">
+                <div className="section-label">AI Coach</div>
+                <div className="coach-bubble">
+                  <div className="bubble-dot"></div>
+                  <div className="bubble-dot"></div>
+                  <div className="bubble-dot"></div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Program Page Layout */}
-        <section className="landing-section layout-section" ref={addToRefs}>
-          <h2 className="section-title">Workspace Layout</h2>
-          <p className="section-description">
-            Purpose-built interface designed for optimal learning and productivity
-          </p>
-          <div className="layout-showcase">
-            <div className="layout-card">
-              <div className="layout-card-icon">◧</div>
-              <h3>Code Editor Panel</h3>
-              <p>Full-featured editor on the left side with syntax highlighting, autocomplete, and error detection</p>
+        {/* User Flow - COMPLETELY NEW */}
+        <section className="landing-section flow-section" ref={addToRefs}>
+          <h2 className="section-title">Here's How Your Learning Journey Works</h2>
+          <div className="flow-container">
+            <div className="flow-step" ref={addToRefs}>
+              <div className="flow-visual">
+                <div className="flow-number">1</div>
+              </div>
+              <div className="flow-content">
+                <h3>Choose What You Want to Build</h3>
+                <p>
+                  Open the dashboard and pick a module. Want to learn React components? 
+                  State management? API integration? Start wherever makes sense for you.
+                </p>
+              </div>
+              <div className="flow-mascot">
+                <img src="/assets/beanbag_capybara.png" alt="Capybara relaxing" />
+              </div>
             </div>
-            <div className="layout-card">
-              <div className="layout-card-icon">▦</div>
-              <h3>Live Preview Panel</h3>
-              <p>Top-right section displays real-time rendering of your code changes as you type</p>
+
+            <div className="flow-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
             </div>
-            <div className="layout-card">
-              <div className="layout-card-icon">◈</div>
-              <h3>Result Feedback Panel</h3>
-              <p>Bottom-right provides code quality metrics, time complexity analysis, and skills practiced</p>
+
+            <div className="flow-step" ref={addToRefs}>
+              <div className="flow-visual">
+                <div className="flow-number">2</div>
+              </div>
+              <div className="flow-content">
+                <h3>Your Coach Greets You With Voice</h3>
+                <p>
+                  The module opens and your AI mentor speaks to you, explaining what you'll 
+                  build, why it matters, and how to get started. No reading walls of text.
+                </p>
+              </div>
+              <div className="flow-mascot">
+                <img src="/assets/happy_headphones_capybara.png" alt="Capybara with headphones" />
+              </div>
+            </div>
+
+            <div className="flow-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
+
+            <div className="flow-step" ref={addToRefs}>
+              <div className="flow-visual">
+                <div className="flow-number">3</div>
+              </div>
+              <div className="flow-content">
+                <h3>Code While Seeing Live Results</h3>
+                <p>
+                  Split screen shows your code on the left, live preview on the right. 
+                  Type, save, and instantly see what your code does. No setup, no config.
+                </p>
+              </div>
+              <div className="flow-mascot">
+                <img src="/assets/capybara_working.png" alt="Capybara coding" />
+              </div>
+            </div>
+
+            <div className="flow-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
+
+            <div className="flow-step" ref={addToRefs}>
+              <div className="flow-visual">
+                <div className="flow-number">4</div>
+              </div>
+              <div className="flow-content">
+                <h3>Get Help the Moment You're Stuck</h3>
+                <p>
+                  AI detects when you haven't made progress and offers hints. Or click the 
+                  help button anytime to ask questions. No waiting, no searching forums.
+                </p>
+              </div>
+              <div className="flow-mascot">
+                <img src="/assets/capybara_hoodie.png" alt="Capybara thinking" />
+              </div>
+            </div>
+
+            <div className="flow-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
+
+            <div className="flow-step" ref={addToRefs}>
+              <div className="flow-visual">
+                <div className="flow-number">5</div>
+              </div>
+              <div className="flow-content">
+                <h3>Submit and See Your Progress</h3>
+                <p>
+                  When you're done, submit your code. Get instant feedback on quality, 
+                  best practices, performance, and what skills you just mastered.
+                </p>
+              </div>
+              <div className="flow-mascot">
+                <img src="/assets/capybara_finished.png" alt="Capybara celebrating" />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Learning Path */}
-        <section className="landing-section path-section" ref={addToRefs}>
-          <h2 className="section-title">Your Learning Journey</h2>
-          <div className="journey-timeline">
-            <div className="timeline-item">
-              <div className="timeline-number">1</div>
-              <div className="timeline-content">
-                <h3>Dashboard</h3>
-                <p>Select from curated courses or define your own custom app project to build</p>
+        {/* Features Deep Dive - REORGANIZED */}
+        <section className="landing-section features-deep" ref={addToRefs}>
+          <h2 className="section-title">The Features That Keep You Moving Forward</h2>
+          
+          <div className="feature-highlight">
+            <div className="highlight-content">
+              <div className="highlight-badge">Voice-Powered</div>
+              <h3>Talk to Your Coach, Not Just Text</h3>
+              <p>
+                Natural voice conversations mean you can ask questions while coding without 
+                breaking your flow. The AI understands context and responds like a real mentor 
+                sitting next to you, explaining concepts in plain language.
+              </p>
+            </div>
+            <div className="highlight-visual">
+              <div className="voice-indicator">
+                <div className="voice-wave"></div>
+                <div className="voice-wave"></div>
+                <div className="voice-wave"></div>
+                <div className="voice-wave"></div>
               </div>
             </div>
-            <div className="timeline-connector"></div>
-            <div className="timeline-item">
-              <div className="timeline-number">2</div>
-              <div className="timeline-content">
-                <h3>Module Learning</h3>
-                <p>Work through structured modules with voice guidance and interactive tasks</p>
-              </div>
+          </div>
+
+          <div className="feature-highlight reverse">
+            <div className="highlight-content">
+              <div className="highlight-badge">Smart Detection</div>
+              <h3>Knows When You Need Help Before You Ask</h3>
+              <p>
+                The system watches your coding patterns. Been on the same error for 5 minutes? 
+                Not sure where to start? It detects hesitation and proactively offers guidance 
+                before frustration sets in.
+              </p>
             </div>
-            <div className="timeline-connector"></div>
-            <div className="timeline-item">
-              <div className="timeline-number">3</div>
-              <div className="timeline-content">
-                <h3>Program Page</h3>
-                <p>Build and test your code in the dual-screen sandbox environment</p>
-              </div>
+            <div className="highlight-visual">
+              <div className="detection-pulse"></div>
             </div>
-            <div className="timeline-connector"></div>
-            <div className="timeline-item">
-              <div className="timeline-number">4</div>
-              <div className="timeline-content">
-                <h3>Results & Progress</h3>
-                <p>Review achievements, track skills mastered, and celebrate milestones</p>
+          </div>
+
+          <div className="feature-highlight">
+            <div className="highlight-content">
+              <div className="highlight-badge">Hints Over Answers</div>
+              <h3>Guides You to Solutions, Doesn't Give Them Away</h3>
+              <p>
+                When you click help, you get leading questions and hints that help you think 
+                through the problem. The AI teaches you how to solve it yourself, so you actually 
+                learn instead of just copying code.
+              </p>
+            </div>
+            <div className="highlight-visual">
+              <div className="hint-card">
+                <div className="hint-text">Think about what happens when...</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* Results Section - NEW */}
+        <section className="landing-section results-section" ref={addToRefs}>
+          <h2 className="section-title">Track Your Growth With Real Metrics</h2>
+          <div className="results-grid">
+            <GlassCard title="Code Compilation">
+              <p>See if your code runs successfully and where errors occur with clear explanations</p>
+            </GlassCard>
+            <GlassCard title="Best Practices">
+              <p>Learn industry standards as you code with feedback on naming, structure, and patterns</p>
+            </GlassCard>
+            <GlassCard title="Effectiveness Score">
+              <p>Get a quality rating showing how efficient and maintainable your solution is</p>
+            </GlassCard>
+            <GlassCard title="Skills Mastered">
+              <p>Track which concepts you've practiced and what you're ready to learn next</p>
+            </GlassCard>
+          </div>
+        </section>
+
+        {/* Social Proof / Trust - NEW */}
+        <section className="landing-section trust-section" ref={addToRefs}>
+          <div className="trust-content">
+            <h2 className="section-title">Built For Learners Who Refuse to Quit</h2>
+            <p className="trust-statement">
+              We built CapyCode because we've been there. Staring at error messages at 2am, 
+              questioning if we were smart enough, feeling completely alone in the struggle. 
+              This is the tool we wish we had when we were learning.
+            </p>
+            <div className="trust-stats">
+              <div className="stat-item">
+                <div className="stat-value">100%</div>
+                <div className="stat-label">Free Forever</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-value">24/7</div>
+                <div className="stat-label">AI Coach Available</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-value">0</div>
+                <div className="stat-label">Setup Required</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
         <section className="landing-section cta-section" ref={addToRefs}>
           <div className="cta-content">
-            <h2 className="cta-title">Ready to Transform Your Coding Skills?</h2>
+            <h2 className="cta-title">Ready to Stop Getting Stuck?</h2>
             <p className="cta-subtitle">
-              Join the future of interactive programming education
+              Start your first module right now. No signup, no credit card, no commitment.
+              Just you, your AI coach, and the code you're about to write.
             </p>
             <button
               className="cta-button-large"
               onClick={() => { void navigate("/dashboard"); }}
             >
-              Launch Dashboard
+              Launch Your First Module
             </button>
           </div>
         </section>
       </div>
+
+      {/* Footer */}
+      <footer className="landing-footer">
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3 className="footer-logo">CAPYCODE</h3>
+            <p className="footer-tagline">Your AI coding mentor, always by your side</p>
+          </div>
+          
+          <div className="footer-section">
+            <h4 className="footer-heading">Platform</h4>
+            <ul className="footer-links">
+              <li><a href="/dashboard">Dashboard</a></li>
+              <li><a href="/landing-page">Features</a></li>
+              <li><a href="/landing-page">How It Works</a></li>
+            </ul>
+          </div>
+
+          <div className="footer-section">
+            <h4 className="footer-heading">Resources</h4>
+            <ul className="footer-links">
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">Tutorials</a></li>
+              <li><a href="#">Community</a></li>
+            </ul>
+          </div>
+
+          <div className="footer-section">
+            <h4 className="footer-heading">Connect</h4>
+            <div className="footer-social">
+              <a href="#" className="social-link" aria-label="GitHub">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+              <a href="#" className="social-link" aria-label="Twitter">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                </svg>
+              </a>
+              <a href="#" className="social-link" aria-label="Discord">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div className="footer-bottom">
+          <p className="footer-copyright">
+            © {new Date().getFullYear()} CapyCode. Built for learners who refuse to quit.
+          </p>
+          <div className="footer-bottom-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
