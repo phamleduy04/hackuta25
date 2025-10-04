@@ -1,4 +1,5 @@
 import { ConvexReactClient } from "convex/react";
+import Background from "./components/Background";
 import "./index.css";
 import { ConvexProviderWithAuth0 } from "convex/react-auth0";
 import { Auth0Provider } from "@auth0/auth0-react";
@@ -21,21 +22,24 @@ function App() {
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Auth0Provider
-      domain="dev-ozpuumiml3s2ke0s.us.auth0.com"
-      clientId="P484i9OvzkjVV1hwXKSkhOmHsjuhSITm"
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-      }}
-      useRefreshTokens={true}
-      cacheLocation="localstorage"
-    >
-      <ConvexProviderWithAuth0 client={convex}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-      </ConvexProviderWithAuth0>
-    </Auth0Provider>
-  </StrictMode>,
+  <>
+    <Background />
+    <StrictMode>
+      <Auth0Provider
+        domain="dev-ozpuumiml3s2ke0s.us.auth0.com"
+        clientId="P484i9OvzkjVV1hwXKSkhOmHsjuhSITm"
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+        }}
+        useRefreshTokens={true}
+        cacheLocation="localstorage"
+      >
+        <ConvexProviderWithAuth0 client={convex}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+        </ConvexProviderWithAuth0>
+      </Auth0Provider>
+    </StrictMode>
+  </>
 );
