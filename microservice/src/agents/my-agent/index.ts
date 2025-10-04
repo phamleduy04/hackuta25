@@ -76,6 +76,8 @@ export default async function Agent(
       return resp.text('No goal provided');
     }
 
+    console.log('Prompt context:', goal);
+
     const result = await client.models.generateContentStream({
       model: 'gemini-2.5-flash',
       contents: systemPrompt + '\n\n' + goal,
