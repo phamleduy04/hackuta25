@@ -1,0 +1,328 @@
+/* Mini paragraph overlay for learn more */
+.mini-paragraph {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  color: #efeef5;
+  flex-direction: column;
+  opacity: 1;
+  transition: opacity 1.2s;
+  pointer-events: auto;
+}
+/* White hand image on right side */
+.white-hand-img {
+  position: fixed;
+  top: 20%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  max-width: 48vw;
+  height: auto;
+  z-index: 100;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Credit card logo on right side */
+.credit-card-logo {
+  position: fixed;
+  top:30%;
+  right: 8%;
+  transform: translateY(-50%);
+  width: 650px;
+  max-width: 35vw;
+  height: auto;
+  z-index: 100;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.9;
+  
+}
+/* Fade-in animation for landing content */
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.2s ease-out forwards;
+}
+
+/* Crossfade hidden disables pointer events and fades out */
+.crossfade-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s;
+}
+
+/* Button transition states */
+.button-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.button-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.button-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+}
+
+.button-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* Disabled state during transitions */
+.homepage-buttons:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: scale(0.98);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Smooth scale animation for button interactions */
+.homepage-buttons:not(:disabled):hover:not(:active) {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.homepage-buttons:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Ensure visible elements have pointer events */
+.container-fluid:not(.crossfade-hidden),
+.mini-paragraph:not(.crossfade-hidden),
+.white-hand-img:not(.crossfade-hidden),
+.credit-card-logo:not(.crossfade-hidden) {
+  pointer-events: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Top-left page title */
+.page-title {
+  position: absolute;
+  top: 13vh;
+  left: 5vw;
+  font-size: 4.2em;
+  font-weight: 100;
+  color: #efeef5;
+  z-index: 10;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+/* Blur overlay for background */
+
+.homebackground-root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Josefin Sans", sans-serif;
+  box-sizing: border-box;
+}
+
+.statement {
+  width: 650px;
+}
+
+.container-fluid {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+/* ============= Animation background ========= */
+.cube {
+  position: absolute;
+  top: 80vh;
+  left: 45vw;
+  width: 10px;
+  height: 10px;
+  border: solid 1px #d7d4e4;
+  transform-origin: top left;
+  transform: scale(0) rotate(0deg) translate(-50%, -50%);
+  animation: cube 12s ease-in forwards infinite;
+}
+.cube:nth-child(2n) {
+  border-color: #fff;
+}
+.cube:nth-child(2) {
+  animation-delay: 2s;
+  left: 25vw;
+  top: 40vh;
+}
+.cube:nth-child(3) {
+  animation-delay: 4s;
+  left: 75vw;
+  top: 50vh;
+}
+.cube:nth-child(4) {
+  animation-delay: 6s;
+  left: 90vw;
+  top: 10vh;
+}
+.cube:nth-child(5) {
+  animation-delay: 8s;
+  left: 10vw;
+  top: 85vh;
+}
+.cube:nth-child(6) {
+  animation-delay: 10s;
+  left: 50vw;
+  top: 10vh;
+}
+/* ================= Header ============ */
+header {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+/* navbar */
+nav {
+  color: #fff;
+  float: right;
+  margin: 30px 90px;
+}
+nav ul {
+  list-style: none;
+}
+nav ul li {
+  float: left;
+  transition: 0.3s;
+}
+nav ul li a {
+  text-decoration: none;
+  color: #efeef5;
+  transition: 0.5;
+  font-size: 15px;
+  margin-left: 16px;
+}
+nav ul li:hover a {
+  text-decoration: none;
+  color: #ffffff;
+}
+nav ul li:hover {
+  height: 45px;
+  padding-top: 30px;
+  margin-top: -30px;
+  text-decoration: none;
+  transform: skew(15deg);
+}
+
+.header-content {
+  color: #efeef5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+  height: 100vh;
+  width: 100vw;
+  padding-left: 5vw;
+  /* Remove padding-top to allow vertical centering */
+}
+
+.homepage-buttons {
+  width: 140px;
+  margin-right: 20px;
+  color: #ffffff;
+  font-size: 17px;
+  border: 1px solid #efeef5;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-in-out;
+  transform: translateY(0);
+  opacity: 1;
+}
+.homepage-buttons:hover {
+  border-radius: 0;
+  box-shadow: 0 4px 12px rgba(239, 238, 245, 0.3);
+  background-color: rgba(239, 238, 245, 0.1);
+}
+.homepage-buttons:active {
+  opacity: 0.7;
+  transform: translateY(0);
+  transition: all 0.1s ease-in-out;
+}
+.homepage-buttons:focus {
+  outline: 2px solid rgba(239, 238, 245, 0.6);
+  outline-offset: 2px;
+  border: 1px solid #efeef5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(239, 238, 245, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.header-content h1 {
+  font-size: 5em;
+  letter-spacing: 1px;
+  text-align: left;
+  font-weight: 100;
+}
+.header-content p {
+  font-size: 20px;
+  line-height: 1.5;
+  margin: 20px 0;
+  text-align: left;
+}
+/* Glassmorphism bubble for mini paragraph */
+.glass-bubble {
+  background: rgba(169, 168, 168, 0.13);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 32px;
+  border: 1.5px solid rgba(85, 85, 85, 0.25);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 520px;
+  width: 90vw;
+  margin: 0 auto;
+}
+
+/* Mini paragraph fade-in from bottom animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glass-bubble.fade-in-up {
+  animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
