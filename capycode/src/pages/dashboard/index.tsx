@@ -89,25 +89,40 @@ export default function Dashboard() {
                 className={`ld-fw ${selectedFramework === "all" ? "active" : ""}`}
                 onClick={() => setSelectedFramework("all")}
               >All</button>
-              {frameworks.map((f) => (
-                <button
-                  key={f.key}
-                  className={`ld-fw ${selectedFramework === f.key ? "active" : ""}`}
-                  onClick={() => setSelectedFramework(f.key)}
-                >{f.name}</button>
-              ))}
+              {frameworks.map((f) => {
+                const Icon = f.icon;
+                return (
+                  <button
+                    key={f.key}
+                    className={`ld-fw ${selectedFramework === f.key ? "active" : ""}`}
+                    onClick={() => setSelectedFramework(f.key)}
+                  >
+                    <Icon size={16} style={{ color: f.color }} />
+                    <span>{f.name}</span>
+                  </button>
+                );
+              })}
             </div>
 
             <h3 className="ld-section-sub">Your Courses</h3>
             <div className={`ld-courses ${view}`}>
-              {enrolled.map((c) => (
-                <button key={c.id} className={`ld-course glass ${view}`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
-                  <div className="ld-course-main">
-                    <div className="ld-course-title">{c.title}</div>
-                    <div className="ld-course-meta">{userEnrollments[c.id] === "finished" ? "Finished" : "Enrolled"} • {frameworks.find(f=>f.key===c.framework)?.name} • {c.durationMin}m</div>
-                  </div>
-                </button>
-              ))}
+              {enrolled.map((c) => {
+                const framework = frameworks.find(f=>f.key===c.framework);
+                const Icon = framework?.icon;
+                return (
+                  <button key={c.id} className={`ld-course glass ${view}`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
+                    {Icon && (
+                      <div className="ld-course-icon" style={{ backgroundColor: `${framework.color}15`, borderColor: `${framework.color}40` }}>
+                        <Icon size={24} style={{ color: framework.color }} />
+                      </div>
+                    )}
+                    <div className="ld-course-main">
+                      <div className="ld-course-title">{c.title}</div>
+                      <div className="ld-course-meta">{userEnrollments[c.id] === "finished" ? "Finished" : "Enrolled"} • {framework?.name} • {c.durationMin}m</div>
+                    </div>
+                  </button>
+                );
+              })}
               {enrolled.length === 0 && <div className="ld-empty">You haven't enrolled in any courses yet.</div>}
             </div>
 
@@ -115,14 +130,23 @@ export default function Dashboard() {
               <>
                 <h3 className="ld-section-sub">Finished</h3>
                 <div className={`ld-courses ${view}`}>
-                  {finished.map((c) => (
-                    <button key={c.id} className={`ld-course glass ${view} finished`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
-                      <div className="ld-course-main">
-                        <div className="ld-course-title">{c.title}</div>
-                        <div className="ld-course-meta">Finished • {frameworks.find(f=>f.key===c.framework)?.name} • {c.durationMin}m</div>
-                      </div>
-                    </button>
-                  ))}
+                  {finished.map((c) => {
+                    const framework = frameworks.find(f=>f.key===c.framework);
+                    const Icon = framework?.icon;
+                    return (
+                      <button key={c.id} className={`ld-course glass ${view} finished`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
+                        {Icon && (
+                          <div className="ld-course-icon" style={{ backgroundColor: `${framework.color}15`, borderColor: `${framework.color}40` }}>
+                            <Icon size={24} style={{ color: framework.color }} />
+                          </div>
+                        )}
+                        <div className="ld-course-main">
+                          <div className="ld-course-title">{c.title}</div>
+                          <div className="ld-course-meta">Finished • {framework?.name} • {c.durationMin}m</div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -159,6 +183,11 @@ export default function Dashboard() {
             </div>
           </section>
         )}
+
+        {/* Footer */}
+        <footer className="ld-footer">
+          <p>© 2025 CapyCode • Built for learners who refuse to quit</p>
+        </footer>
       </main>
     </div>
   );

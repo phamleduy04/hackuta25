@@ -188,6 +188,9 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .ex-pill:hover {
@@ -238,6 +241,28 @@
   overflow: hidden;
 }
 
+.ex-featured-icon-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ex-featured-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid;
+  transition: all 0.3s ease;
+}
+
+.ex-featured-card:hover .ex-featured-icon {
+  transform: scale(1.05);
+}
+
 .ex-featured-card::before {
   content: "";
   position: absolute;
@@ -265,7 +290,6 @@
   background: rgba(239, 238, 245, 0.15);
   border-radius: 6px;
   font-size: 0.75rem;
-  margin-bottom: 1rem;
   color: rgba(239, 238, 245, 0.9);
 }
 
@@ -324,6 +348,30 @@
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.25s;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.ex-course-icon {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid;
+  transition: all 0.3s ease;
+}
+
+.ex-course-card:hover .ex-course-icon {
+  transform: scale(1.05);
+}
+
+.ex-course-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .ex-course-card:hover {

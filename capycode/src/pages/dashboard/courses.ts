@@ -1,4 +1,6 @@
-export type FrameworkKey = "react" | "vue" | "python" | "javascript";
+import { Component, Boxes, FileCode, FileType2, LucideIcon } from "lucide-react";
+
+export type FrameworkKey = "react" | "vue" | "typescript" | "javascript";
 
 export type Course = {
   id: string;
@@ -8,11 +10,11 @@ export type Course = {
   framework: FrameworkKey;
 };
 
-export const frameworks: Array<{ key: FrameworkKey; name: string }> = [
-  { key: "react", name: "React" },
-  { key: "vue", name: "Vue" },
-  { key: "python", name: "Python" },
-  { key: "javascript", name: "JavaScript" },
+export const frameworks: Array<{ key: FrameworkKey; name: string; icon: LucideIcon; color: string }> = [
+  { key: "react", name: "React", icon: Component, color: "#61dafb" },
+  { key: "vue", name: "Vue", icon: Boxes, color: "#42b883" },
+  { key: "typescript", name: "TypeScript", icon: FileType2, color: "#3178c6" },
+  { key: "javascript", name: "JavaScript", icon: FileCode, color: "#f7df1e" },
 ];
 
 export const courses: Array<Course> = [
@@ -24,8 +26,8 @@ export const courses: Array<Course> = [
   { id: "v-1", title: "Vue Directives 101", difficulty: "Beginner", durationMin: 25, framework: "vue" },
   { id: "v-2", title: "Reactive State in Vue", difficulty: "Beginner", durationMin: 28, framework: "vue" },
 
-  { id: "p-1", title: "Python Basics: Variables & Loops", difficulty: "Beginner", durationMin: 30, framework: "python" },
-  { id: "p-2", title: "Working with Files", difficulty: "Intermediate", durationMin: 35, framework: "python" },
+  { id: "t-1", title: "TypeScript Basics: Types & Interfaces", difficulty: "Beginner", durationMin: 30, framework: "typescript" },
+  { id: "t-2", title: "Advanced Types & Generics", difficulty: "Intermediate", durationMin: 35, framework: "typescript" },
 
   { id: "j-1", title: "JS Fundamentals: Scope & Closures", difficulty: "Intermediate", durationMin: 40, framework: "javascript" },
   { id: "j-2", title: "Async JS with Fetch", difficulty: "Intermediate", durationMin: 38, framework: "javascript" },

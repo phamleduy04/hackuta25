@@ -80,15 +80,19 @@ export default function ExploreCourses() {
             >
               All Courses
             </button>
-            {frameworks.map((f) => (
-              <button
-                key={f.key}
-                className={`ex-pill ${selectedCategory === f.key ? "active" : ""}`}
-                onClick={() => setSelectedCategory(f.key)}
-              >
-                {f.name}
-              </button>
-            ))}
+            {frameworks.map((f) => {
+              const Icon = f.icon;
+              return (
+                <button
+                  key={f.key}
+                  className={`ex-pill ${selectedCategory === f.key ? "active" : ""}`}
+                  onClick={() => setSelectedCategory(f.key)}
+                >
+                  <Icon size={16} style={{ color: f.color }} />
+                  <span>{f.name}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -105,19 +109,91 @@ export default function ExploreCourses() {
               <TrendingUp size={24} className="ex-icon-accent" />
             </div>
             <div className="ex-featured-grid">
-              {featured.map((c) => (
+              {featured.map((c) => {
+                const framework = frameworks.find((f) => f.key === c.framework);
+                const Icon = framework?.icon;
+                return (
+                  <AlertDialog key={c.id}>
+                    <AlertDialogTrigger asChild>
+                      <div className="ex-featured-card">
+                        <div className="ex-featured-icon-wrapper">
+                          {Icon && (
+                            <div className="ex-featured-icon" style={{ backgroundColor: `${framework.color}15`, borderColor: `${framework.color}40` }}>
+                              <Icon size={28} style={{ color: framework.color }} />
+                            </div>
+                          )}
+                          <div className="ex-featured-badge">{framework?.name}</div>
+                        </div>
+                        <h3>{c.title}</h3>
+                        <p>{c.difficulty}</p>
+                        <div className="ex-featured-meta">
+                          <Clock size={14} />
+                          <span>{c.durationMin} min</span>
+                        </div>
+                        <div className="ex-featured-cta">
+                          Enroll Now <ArrowRight size={16} />
+                        </div>
+                      </div>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Enroll in {c.title}?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Learn using the {framework?.name} framework. Estimated {c.durationMin} minutes. Confirm to add this module to your dashboard.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => {
+                            userEnrollments[c.id] = "enrolled";
+                            navigate("/dashboard");
+                          }}
+                        >
+                          Confirm Enroll
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* All Courses Grid */}
+      <section className="ex-all">
+        <div className="ex-container">
+          <h2 className="ex-section-title">All Available Courses</h2>
+          <div className="ex-grid">
+            {nonEnrolled.map((c) => {
+              const framework = frameworks.find((f) => f.key === c.framework);
+              const Icon = framework?.icon;
+              return (
                 <AlertDialog key={c.id}>
                   <AlertDialogTrigger asChild>
-                    <div className="ex-featured-card">
-                      <div className="ex-featured-badge">{frameworks.find((f) => f.key === c.framework)?.name}</div>
-                      <h3>{c.title}</h3>
-                      <p>{c.difficulty}</p>
-                      <div className="ex-featured-meta">
-                        <Clock size={14} />
-                        <span>{c.durationMin} min</span>
-                      </div>
-                      <div className="ex-featured-cta">
-                        Enroll Now <ArrowRight size={16} />
+                    <div className="ex-course-card">
+                      {Icon && (
+                        <div className="ex-course-icon" style={{ backgroundColor: `${framework.color}15`, borderColor: `${framework.color}40` }}>
+                          <Icon size={28} style={{ color: framework.color }} />
+                        </div>
+                      )}
+                      <div className="ex-course-content">
+                        <div className="ex-course-header">
+                          <span className="ex-course-level">{c.difficulty}</span>
+                          <span className="ex-course-fw">{framework?.name}</span>
+                        </div>
+                        <h3 className="ex-course-title">{c.title}</h3>
+                        <div className="ex-course-footer">
+                          <div className="ex-course-duration">
+                            <Clock size={14} />
+                            <span>{c.durationMin}m</span>
+                          </div>
+                          <button className="ex-course-btn">
+                            View <ArrowRight size={14} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </AlertDialogTrigger>
@@ -125,7 +201,7 @@ export default function ExploreCourses() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Enroll in {c.title}?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Learn using the {frameworks.find((f) => f.key === c.framework)?.name} framework. Estimated {c.durationMin} minutes. Confirm to add this module to your dashboard.
+                        Learn using the {framework?.name} framework. Estimated {c.durationMin} minutes. Confirm to add this module to your dashboard.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -141,58 +217,8 @@ export default function ExploreCourses() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* All Courses Grid */}
-      <section className="ex-all">
-        <div className="ex-container">
-          <h2 className="ex-section-title">All Available Courses</h2>
-          <div className="ex-grid">
-            {nonEnrolled.map((c) => (
-              <AlertDialog key={c.id}>
-                <AlertDialogTrigger asChild>
-                  <div className="ex-course-card">
-                    <div className="ex-course-header">
-                      <span className="ex-course-level">{c.difficulty}</span>
-                      <span className="ex-course-fw">{frameworks.find((f) => f.key === c.framework)?.name}</span>
-                    </div>
-                    <h3 className="ex-course-title">{c.title}</h3>
-                    <div className="ex-course-footer">
-                      <div className="ex-course-duration">
-                        <Clock size={14} />
-                        <span>{c.durationMin}m</span>
-                      </div>
-                      <button className="ex-course-btn">
-                        View <ArrowRight size={14} />
-                      </button>
-                    </div>
-                  </div>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Enroll in {c.title}?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Learn using the {frameworks.find((f) => f.key === c.framework)?.name} framework. Estimated {c.durationMin} minutes. Confirm to add this module to your dashboard.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => {
-                        userEnrollments[c.id] = "enrolled";
-                        navigate("/dashboard");
-                      }}
-                    >
-                      Confirm Enroll
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            ))}
+              );
+            })}
           </div>
           {nonEnrolled.length === 0 && (
             <div className="ex-empty">
