@@ -1,5 +1,7 @@
+import { HomeBackground} from '@/components/HomeBackground';
+
 function Index() {
-  return <div>Index</div>;
+  return <HomeBackground />;
 }
 
 export default Index;
