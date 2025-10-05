@@ -32,10 +32,9 @@ export default function CodeEditor() {
     const [allViewableFiles, setAllViewableFiles] = useState<Record<string, string>>({});
     const [fileName, setFileName] = useState<string>("");
     const [customFiles, setCustomFiles] = useState<Record<string, string>>({});
-    const initialized = useRef(false);
 
     useEffect(() => {
-        if (Object.keys(allViewableFiles).length === 0 || initialized.current) return;
+        if (Object.keys(allViewableFiles).length === 0) return;
 
         const frameworkStored = localStorage.getItem("framework");
         const planStored = localStorage.getItem("plan");
@@ -46,7 +45,6 @@ export default function CodeEditor() {
             setTemplate(parsedFramework);
             setContext(allViewableFiles, parsedFramework, parsedPlan);
             setAgentId("agent_7801k6re9566f1990zee8hcy45k3");
-            initialized.current = true;
         }
 
     }, [allViewableFiles, setAgentId]);
