@@ -30,13 +30,25 @@ function setContext(files: Record<string, string>, template: FrameworkEnum, plan
 
 export default function CodeEditor() {
     const { setAgentId } = useVoice();
-    const [template, setTemplate] = useState<FrameworkEnum>(FrameworkEnum.react);
+    const [template, setTemplate] = useState<FrameworkEnum | null>(null);
     const [allViewableFiles, setAllViewableFiles] = useState<Record<string, string>>({});
     const [fileName, setFileName] = useState<string>("");
     const [customFiles, setCustomFiles] = useState<Record<string, string>>({});
     const [plan, setPlan] = useState<string>("");
 
     const createCodeResult = useAction(api.result.createCodeResult);
+
+    useEffect(() => {
+        const defaultFilesStored = localStorage.getItem("files");
+        if (defaultFilesStored) {
+            setCustomFiles(JSON.parse(defaultFilesStored));
+        }
+        const defaultFrameworkStored = localStorage.getItem("framework");
+        if (defaultFrameworkStored) {
+            setTemplate(JSON.parse(defaultFrameworkStored) as FrameworkEnum);
+        }
+        setAgentId("agent_7801k6re9566f1990zee8hcy45k3");
+    }, []);
 
     useEffect(() => {
         if (Object.keys(allViewableFiles).length === 0) return;
@@ -50,7 +62,6 @@ export default function CodeEditor() {
             setTemplate(parsedFramework);
             setPlan(parsedPlan);
             setContext(allViewableFiles, parsedFramework, parsedPlan);
-            setAgentId("agent_7801k6re9566f1990zee8hcy45k3");
         }
 
     }, [allViewableFiles, setAgentId]);
@@ -62,7 +73,7 @@ export default function CodeEditor() {
         createCodeResult({
             code: allViewableFiles,
             tasks: plan,
-            framework: template,
+            framework: template ?? FrameworkEnum.react,
         })
             .then((result) => {
                 console.log("Result", result);
@@ -87,7 +98,7 @@ export default function CodeEditor() {
     }
 
     return (
-        
+        template && (
             
             <SandpackProvider
                 theme={gruvboxDark}
@@ -143,7 +154,7 @@ export default function CodeEditor() {
                     </ResizablePanelGroup>
                 </SandpackLayout>
             </SandpackProvider>
-        
+        )
     )
 }
 

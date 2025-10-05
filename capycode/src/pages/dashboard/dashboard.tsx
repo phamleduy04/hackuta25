@@ -1,18 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LayoutGrid, List, Search, Check } from "lucide-react";
 import "./dashboard.css";
-import { frameworks, courses, userEnrollments, type FrameworkKey, type Course } from "./courses";
+import { frameworks, courses, userEnrollments, type Course } from "./courses";
 import Sidebar, { type TabKey } from "./Sidebar";
+import { useAuth0 } from "@auth0/auth0-react";
+import { FrameworkEnum } from "@/contexts/voice-context";
 
 export default function Dashboard() {
     const [active, setActive] = useState<TabKey>("modules");
-    const [selectedFramework, setSelectedFramework] = useState<FrameworkKey | "all">("all");
+    const [selectedFramework, setSelectedFramework] = useState<FrameworkEnum | "all">("all");
     const [inputQuery, setInputQuery] = useState("");
     const [query, setQuery] = useState("");
     const [view, setView] = useState<"grid" | "list">("grid");
     const [condensed, setCondensed] = useState(false);
     const mainRef = useRef<HTMLElement | null>(null);
     const searchRef = useRef<HTMLInputElement | null>(null);
+
+    const { logout } = useAuth0();
 
     useEffect(() => {
         const el = mainRef.current;
@@ -82,7 +86,7 @@ export default function Dashboard() {
 
             {/* Main Content */}
             <main className="ld-main" ref={mainRef}>
-                <header className={`ld-header glass ${condensed ? "condensed" : ""}`}>
+                <header className={`ld-header glass flex flex-row items-center ${condensed ? "condensed" : ""}`}>
                     <div className="ld-header-content">
                         <div className="ld-header-brand">
                             <img
@@ -96,7 +100,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="ld-actions-row">
+                    <div className="ld-actions-row h-full flex items-center flex-wrap flex-1">
                         <div className="ld-search glass">
                             <Search size={18} />
                             <input
@@ -179,7 +183,13 @@ export default function Dashboard() {
                                         const framework = frameworks.find(f => f.key === c.framework);
                                         const Icon = framework?.icon;
                                         return (
-                                            <button key={c.id} className={`ld-course glass ${view}`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
+                                            <button key={c.id} className={`ld-course glass ${view}`} onClick={() => {
+                                                localStorage.setItem("files", JSON.stringify(c.files));
+                                                localStorage.setItem("plan", JSON.stringify(c.plan));
+                                                localStorage.setItem("framework", JSON.stringify(c.framework));
+                                                // window.location.href = `/modules/${c.id}`;
+                                                window.location.href = "/code";
+                                            }}>
                                                 <div className="ld-course-badges">
                                                     <span className="ld-pill">{c.difficulty}</span>
                                                     <span className="ld-pill alt">{c.durationMin}m</span>
@@ -210,7 +220,13 @@ export default function Dashboard() {
                                                 const framework = frameworks.find(f => f.key === c.framework);
                                                 const Icon = framework?.icon;
                                                 return (
-                                                    <button key={c.id} className={`ld-course glass ${view} finished`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
+                                                    <button key={c.id} className={`ld-course glass ${view} finished`} onClick={() => { 
+                                                        localStorage.setItem("files", JSON.stringify(c.files));
+                                                        localStorage.setItem("plan", JSON.stringify(c.plan));
+                                                        localStorage.setItem("framework", JSON.stringify(c.framework));
+                                                        // window.location.href = `/modules/${c.id}`; 
+                                                        window.location.href = "/code";
+                                                    }}>
                                                         <div className="ld-course-badges">
                                                             <span className="ld-pill">{c.difficulty}</span>
                                                             <span className="ld-pill alt">{c.durationMin}m</span>
@@ -254,7 +270,7 @@ export default function Dashboard() {
                             <div className="row actions">
                                 <button className="ld-primary">Save Changes</button>
                                 <button className="ld-danger">Delete Account</button>
-                                <button className="ld-secondary">Logout</button>
+                                <button className="ld-secondary" onClick={() => logout()}>Logout</button>
                             </div>
                         </div>
                     </section>

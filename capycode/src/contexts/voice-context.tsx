@@ -49,6 +49,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const [isMicOn, setIsMicOn] = useState(false);
     const [conversationStatus, setConversationStatus] = useState<Status>("stopped");
     const [messages, setMessages] = useState<Message[]>([]);
+    const [lastAssistantText, setLastAssistantText] = useState<string | undefined>();
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const [framework, setFramework] = useState<FrameworkEnum>(FrameworkEnum.react);
     const [agentId, setAgentId] = useState<string>("agent_8101k6ryej6nf3v8c47f035d094p");
@@ -61,8 +62,11 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const conversation = useConversation({
         agentId: agentId,
         connectionType: 'webrtc',
-        onMessage: (message) => {
-            setMessages(prev => [...prev, message]);
+        onMessage: (message: any) => {
+            console.log("Message", message);
+            // emit the message as custom event
+            window.dispatchEvent(new CustomEvent("conversation_message", { detail: message }));
+            
         },
         clientTools: {
             set_framework: (framework: any) => {
@@ -70,6 +74,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
                 if (!Object.values(FrameworkEnum).includes(framework.framework)) {
                     throw new Error("Invalid framework");
                 }
+                localStorage.setItem("framework", JSON.stringify(framework.framework));
                 setFramework(framework.framework);
                 return "Framework set";
             },
@@ -80,12 +85,16 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
                     goal: prompt.prompt,
                 });
                 localStorage.setItem("plan", JSON.stringify(plan));
+                localStorage.setItem("files", JSON.stringify({}));
+
+                setTimeout(() => {
+                    redirectLink.current = "/code";
+                }, 1000);
+
                 return "Plan created";
             },
             send_plan: (plan: string) => {
                 console.log("Plan", plan);
-                localStorage.setItem("framework", JSON.stringify(framework));
-                localStorage.setItem("conversation", JSON.stringify(messages));
 
                 setTimeout(() => {
                     redirectLink.current = "/code";
@@ -151,11 +160,26 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
             console.error("Mic denied", error);
             setIsMicOn(false);
         }
+
     }, []);
 
     useEffect(() => {
         requestMic();
     }, [requestMic]);
+
+    useEffect(() => {
+        const handleMessage = (message: CustomEvent) => {
+            console.log("Messages", messages);
+            setMessages(prev => [...prev, message.detail]);
+            if (message.detail.source === "agent") {
+                setLastAssistantText(message.detail.message);
+            }
+            localStorage.setItem("conversation", JSON.stringify([...messages, message.detail]));
+        };
+
+        window.addEventListener("conversation_message", handleMessage as EventListener);
+        return () => window.removeEventListener("conversation_message", handleMessage as EventListener);
+    }, [messages]);
 
     return (
         <VoiceContext.Provider value={{ 

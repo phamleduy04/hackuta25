@@ -47,7 +47,7 @@ export default function ChatBox({ getFeedback }: { getFeedback: () => void }) {
                                             "p-2 rounded-md max-w-[85%]",
                                             message.source === "user" 
                                                 ? "bg-white text-black ml-auto" 
-                                                : "bg-gray-900 mr-auto"
+                                                : "bg-black/90 mr-auto"
                                         )}
                                     >
                                         <Markdown remarkPlugins={[remarkGfm]}>{message.message}</Markdown>
