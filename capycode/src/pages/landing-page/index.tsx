@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import DynamicBackground from "@/components/DynamicBackground";
 import GlassCard from "@/components/GlassCard";
+import SharedNav from "@/components/SharedNav";
 import "@/components/HomeBackground.css";
 import "./landing.css";
 
@@ -39,22 +40,12 @@ const LandingPage: React.FC = () => {
       <DynamicBackground
         speed={35}
         scale={1.5}
-        color="#232323"
+        color="#404040"
         noiseIntensity={0.02}
         rotation={2.18}
       />
       
-      <nav className="landing-nav">
-        <a href="/" className="nav-logo">
-          CAPYCODE
-        </a>
-        <button
-          className="nav-cta"
-          onClick={() => { void navigate("/dashboard"); }}
-        >
-          Get Started
-        </button>
-      </nav>
+      <SharedNav />
 
       <div className="landing-scroll-container">
         {/* Hero Section */}

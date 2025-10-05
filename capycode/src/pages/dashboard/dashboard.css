@@ -22,6 +22,7 @@
       #1a1a1a 100%);
   background-size: 100% 100%, 400% 400%;
   animation: gradientShift 25s ease infinite;
+  transition: background 0.5s ease;
 }
 
 /* Noise texture overlay */
@@ -419,12 +420,20 @@
   padding: 0.2rem 0.4rem;
   white-space: nowrap;
 }
+/* View controls container */
+.ld-view-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* Segmented control for grid/list */
 .ld-toggle.segmented {
+  --ld-toggle-gap: 0.35rem;
   position: relative;
-  display: inline-grid;
-  grid-auto-flow: column;
-  gap: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ld-toggle-gap);
   padding: 0.25rem;
   border-radius: 12px;
   border: 1px solid rgba(239,238,245,0.2);
@@ -437,19 +446,58 @@
   height: 32px;
   border-radius: 10px;
   z-index: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  color: rgba(239,238,245,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ld-toggle.segmented .ld-toggle-btn:hover {
+  color: #efeef5;
+}
+.ld-toggle.segmented .ld-toggle-btn.active {
+  color: #efeef5;
 }
 .ld-toggle-thumb {
   position: absolute;
   top: 4px;
   bottom: 4px;
-  left: 4px;
+  left: 0.25rem;
   width: 38px;
   border-radius: 10px;
   background: rgba(239,238,245,0.15);
   transition: transform 0.2s ease;
   z-index: 0;
 }
-.ld-toggle-thumb.list { transform: translateX(42px); }
+.ld-toggle-thumb.list { transform: translateX(calc(100% + var(--ld-toggle-gap))); }
+
+/* Focus mode button */
+.ld-focus-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(239,238,245,0.2);
+  background: rgba(239,238,245,0.06);
+  color: rgba(239,238,245,0.7);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ld-focus-btn:hover {
+  background: rgba(239,238,245,0.12);
+  border-color: rgba(239,238,245,0.3);
+  color: #efeef5;
+  transform: scale(1.05);
+}
+.ld-focus-btn.active {
+  background: rgba(239,238,245,0.18);
+  border-color: rgba(239,238,245,0.45);
+  color: #efeef5;
+  box-shadow: 0 2px 8px rgba(239,238,245,0.15);
+}
 
 .ld-section { margin-top: 1.25rem; }
 .ld-section-title { 
@@ -558,6 +606,33 @@
   letter-spacing: 0.02em;
 }
 
+.ld-section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ld-focus-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  background: rgba(160,255,190,0.15);
+  border: 1px solid rgba(160,255,190,0.35);
+  color: rgba(160,255,190,0.95);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .ld-explore-head { 
   display: flex; 
   flex-direction: column;
@@ -575,6 +650,7 @@
   display: grid; 
   gap: 2rem; 
   grid-template-columns: 1fr;
+  transition: all 0.3s ease;
 }
 .ld-left, .ld-right { 
   min-width: 0; 
@@ -604,6 +680,92 @@
   .ld-2col {
     grid-template-columns: 360px 1fr;
     gap: 3rem;
+  }
+}
+
+/* Focus mode layout */
+.ld-root.focus-mode {
+  /* Subtle visual change to indicate focus mode */
+  background: 
+    radial-gradient(circle 800px at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(45, 45, 65, 0.18), 
+      transparent 70%),
+    linear-gradient(135deg, 
+      #1a1a1a 0%, 
+      #232323 25%, 
+      #1e1e1e 50%, 
+      #252525 75%, 
+      #1a1a1a 100%);
+}
+
+.ld-2col.focus-mode {
+  grid-template-columns: 1fr;
+  max-width: 100%;
+  gap: 0;
+}
+
+.ld-main.focus-mode {
+  padding: 1.5rem clamp(2rem, 5vw, 5rem);
+}
+
+.ld-main.focus-mode .ld-section {
+  margin-top: 0.5rem;
+}
+
+.ld-main.focus-mode .ld-courses.grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  gap: 1.75rem;
+}
+
+.ld-main.focus-mode .ld-courses.list {
+  gap: 1rem;
+}
+
+.ld-main.focus-mode .ld-course {
+  padding: 1.5rem 1.75rem;
+  min-height: 140px;
+}
+
+.ld-main.focus-mode .ld-section-sub {
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.ld-main.focus-mode .ld-course-title {
+  font-size: 1.05rem;
+}
+
+.ld-main.focus-mode .ld-course-icon {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+}
+
+/* Focus mode responsive */
+@media (max-width: 1024px) {
+  .ld-main.focus-mode {
+    padding: 1.5rem clamp(1rem, 3vw, 3rem);
+  }
+  .ld-main.focus-mode .ld-courses.grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .ld-main.focus-mode {
+    padding: 1rem;
+  }
+  .ld-main.focus-mode .ld-courses.grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .ld-main.focus-mode .ld-course {
+    padding: 1.1rem 1.25rem;
+    min-height: auto;
+  }
+  .ld-main.focus-mode .ld-section-sub {
+    font-size: 1.2rem;
   }
 }
 
@@ -893,9 +1055,18 @@
     max-width: 100%;
   }
   
-  .ld-toggle {
+  .ld-view-controls {
     width: 100%;
     justify-content: center;
+  }
+  
+  .ld-toggle.segmented {
+    flex: 1;
+  }
+  
+  .ld-focus-btn {
+    width: 42px;
+    height: 42px;
   }
 }
 
