@@ -5,8 +5,10 @@ import GlassCard from "@/components/GlassCard";
 import SharedNav from "@/components/SharedNav";
 import "@/components/HomeBackground.css";
 import "./landing.css";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const LandingPage: React.FC = () => {
+  const { loginWithRedirect } = useAuth0();
   const navigate = useNavigate();
   const sectionsRef = useRef<HTMLDivElement[]>([]);
 
@@ -60,7 +62,11 @@ const LandingPage: React.FC = () => {
             </p>
             <button
               className="hero-cta"
-              onClick={() => { void navigate("/dashboard"); }}
+              onClick={() => { void loginWithRedirect({
+                authorizationParams: {
+                  redirect_uri: `${window.location.origin}/dashboard`,
+                },
+              }); }}
             >
               Start Building Now — Free
             </button>
@@ -374,7 +380,11 @@ const LandingPage: React.FC = () => {
             </p>
             <button
               className="cta-button-large"
-              onClick={() => { void navigate("/dashboard"); }}
+              onClick={() => { void loginWithRedirect({
+                authorizationParams: {
+                  redirect_uri: `${window.location.origin}/dashboard`,
+                },
+              }); }}
             >
               Launch Your First Module
             </button>
