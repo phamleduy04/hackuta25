@@ -56,16 +56,14 @@ export default function CodeEditor() {
         }
     }, [allViewableFiles]);
 
-    const [folderName, setFolderName] = useState<string>("");
     const [fileName, setFileName] = useState<string>("");
 
-    const addFolder = () => {
-        const tmpFolder = folderName.length > 0 ? folderName : "New Folder";
-        setAllViewableFiles({ ...allViewableFiles, [`/${tmpFolder}/`]: "" });
-    }
+    const [customFiles, setCustomFiles] = useState<Record<string, string>>({});
+
     const addFile = () => {
         const tmpFile = fileName.length > 0 ? fileName : "New File";
-        setAllViewableFiles({ ...allViewableFiles, [`/${tmpFile}`]: "" });
+        setCustomFiles({ ...customFiles, [`/${tmpFile}`]: "" });
+        setAllViewableFiles({ ...allViewableFiles, ...customFiles });
     }
 
     return (
@@ -73,6 +71,7 @@ export default function CodeEditor() {
             theme={gruvboxDark}
             template={template}
             style={{ height: "100%" }}
+            files={{ ...allViewableFiles, ...customFiles }}
             options={{
                 classes: {
                     "sp-wrapper": "h-screen w-screen dark",
