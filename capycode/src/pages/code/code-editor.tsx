@@ -88,7 +88,7 @@ export default function CodeEditor() {
                         </div>
                     </ResizablePanel>
                     <ResizableHandle />
-                    <ResizablePanel defaultSize={40}>
+                    <ResizablePanel defaultSize={40} minSize={10}>
                         <SandpackCodeEditor
                             showLineNumbers
                             closableTabs
