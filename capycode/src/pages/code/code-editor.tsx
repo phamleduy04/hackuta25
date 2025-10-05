@@ -9,7 +9,7 @@ import {
 } from "@codesandbox/sandpack-react";
 import ChatBox from "./chat-box";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FrameworkEnum } from "@/contexts/voice-context";
 import { Input } from "@/components/ui/input";
 import { useVoice } from "@/hooks/use-voice";
@@ -69,7 +69,7 @@ export default function CodeEditor() {
 
     const [result, setResult] = useState<string | null>(null);
 
-    const getFeedback = () => {
+    const getFeedback = useCallback(() => {
         createCodeResult({
             code: allViewableFiles,
             tasks: plan,
@@ -83,19 +83,19 @@ export default function CodeEditor() {
                     name: "feedback.md",
                     content: result ?? "",
                 }
-                setCustomFiles(prev => ({ ...prev, [`/feedback.md`]: feedbackFile.content }));
+                setCustomFiles(prev => ({ ...allViewableFiles, [`/feedback.md`]: feedbackFile.content }));
                 setResult(result);
             })
             .catch((error) => {
                 console.error("Error", error);
             })
-    }
+    }, [allViewableFiles, plan, template]);
 
-    const addFile = () => {
+    const addFile = useCallback(() => {
         const newFileName = fileName.trim() || "New File";
-        setCustomFiles(prev => ({ ...prev, [`/${newFileName}`]: "" }));
+        setCustomFiles(prev => ({ ...allViewableFiles, [`/${newFileName}`]: "" }));
         setFileName("");
-    }
+    }, [allViewableFiles, setFileName, fileName]);
 
     return (
         template && (
