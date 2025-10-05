@@ -16,6 +16,7 @@ import type {
 import type * as agentuity from "../agentuity.js";
 import type * as courses from "../courses.js";
 import type * as myFunctions from "../myFunctions.js";
+import type * as result from "../result.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   agentuity: typeof agentuity;
   courses: typeof courses;
   myFunctions: typeof myFunctions;
+  result: typeof result;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

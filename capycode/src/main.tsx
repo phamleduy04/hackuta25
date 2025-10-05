@@ -35,9 +35,9 @@ createRoot(document.getElementById("root")!).render(
         cacheLocation="localstorage"
       >
         <ConvexProviderWithAuth0 client={convex}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </ConvexProviderWithAuth0>
       </Auth0Provider>
     </StrictMode>

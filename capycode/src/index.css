@@ -152,3 +152,64 @@
   }
 }
 
+h1 {
+  font-size: 2rem;
+  font-weight: 100;
+  margin: 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 100;
+  margin: 0;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+h4 {
+  font-size: 1rem;
+  font-weight: 100;
+  margin: 0;
+}
+
+.contains-task-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.05rem;
+  margin-bottom: 1rem;
+}
+
+.task-list-item {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  text-wrap: wrap;
+  padding-left: 1.25rem;
+  min-height: 1.75rem;
+  row-gap: 0.05rem;
+}
+
+.task-list-item input {
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.task-list-item code {
+  background-color: #171717;
+  padding: 0.25rem 0.25rem;
+  margin: 0 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 100;
+  color: #ffa500;
+  border: 1px solid #171717;
+  font-family: "JetBrains Mono", monospace;
+}
