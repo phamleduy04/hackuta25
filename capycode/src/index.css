@@ -192,7 +192,7 @@ h4 {
   text-wrap: wrap;
   padding-left: 1.25rem;
   min-height: 1.75rem;
-  row-gap: 0.25rem;
+  row-gap: 0.05rem;
 }
 
 .task-list-item input {
