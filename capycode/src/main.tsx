@@ -14,7 +14,7 @@ import routes from '~react-pages';
 // eslint-disable-next-line react-refresh/only-export-components
 function App() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<p></p>}>
       {useRoutes(routes)}
     </Suspense>
   )
