@@ -43,7 +43,7 @@ export default function CodeEditor({ files }: { files: Record<string, string> })
                     <ResizablePanel defaultSize={40} minSize={10}>
                         <ResizablePanelGroup direction="vertical">
                             <ResizablePanel minSize={10}>
-                                <SandpackPreview style={{ height: "100%" }} />
+                                <SandpackPreview showNavigator style={{ height: "100%" }} />
                             </ResizablePanel>
                             <ResizableHandle />
                             <ResizablePanel minSize={10}>

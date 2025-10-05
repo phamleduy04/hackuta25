@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import GlassCard from "./GlassCard";
-import { useNavigate } from "react-router-dom";
 import DynamicBackground from "./DynamicBackground";
 import "./HomeBackground.css";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const HomeBackground: React.FC = () => {
-  const navigate = useNavigate();
+  const { loginWithRedirect } = useAuth0();
   // showMini: true = show mini paragraph, false = show homepage
   // isTransitioning: true = in the process of hiding mini and showing homepage
   const [showMini, setShowMini] = useState(false);
@@ -106,7 +106,16 @@ export const HomeBackground: React.FC = () => {
           >
             <button
               className="homepage-buttons"
-              onClick={() => navigate("/signup")}
+              onClick={() => {
+                loginWithRedirect({
+                  authorizationParams: {
+                    redirect_uri: `${window.location.origin}/dashboard`,
+                  },
+                }).catch((error) => {
+                  console.error(error);
+                });
+                return;
+              }}
               disabled={isTransitioning}
             >
               Get Started
