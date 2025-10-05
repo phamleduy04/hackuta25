@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { LayoutGrid, List, Search, Check } from "lucide-react";
+import { LayoutGrid, List, Search, Check, Focus } from "lucide-react";
 import "./dashboard.css";
 import { frameworks, courses, userEnrollments, type FrameworkKey, type Course } from "./courses";
 import Sidebar, { type TabKey } from "./Sidebar";
@@ -10,6 +10,7 @@ export default function Dashboard() {
   const [inputQuery, setInputQuery] = useState("");
   const [query, setQuery] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [focusMode, setFocusMode] = useState(false);
   const [condensed, setCondensed] = useState(false);
   const mainRef = useRef<HTMLElement | null>(null);
   const searchRef = useRef<HTMLInputElement | null>(null);
@@ -31,15 +32,27 @@ export default function Dashboard() {
   }, [inputQuery]);
 
   // Command palette shortcut: Cmd+K / Ctrl+K focuses the search
+  // F key toggles focus mode
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const isK = e.key.toLowerCase() === "k";
+      const isF = e.key.toLowerCase() === "f";
+      
       if ((e.metaKey && isK) || (e.ctrlKey && isK)) {
         e.preventDefault();
         const node = searchRef.current;
         if (node) {
           node.focus();
           node.select();
+        }
+      }
+      
+      if (isF && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const target = e.target as HTMLElement;
+        // Don't toggle if user is typing in an input
+        if (target.tagName !== "INPUT" && target.tagName !== "TEXTAREA") {
+          e.preventDefault();
+          setFocusMode((prev) => !prev);
         }
       }
     };
@@ -76,12 +89,12 @@ export default function Dashboard() {
   const completedCount = Object.values(userEnrollments).filter(s => s === "finished").length;
 
   return (
-    <div className="ld-root">
+    <div className={`ld-root ${focusMode ? "focus-mode" : ""}`}>
       {/* Sidebar */}
       <Sidebar active={active} onChange={setActive} />
 
       {/* Main Content */}
-      <main className="ld-main" ref={mainRef}>
+      <main className={`ld-main ${focusMode ? "focus-mode" : ""}`} ref={mainRef}>
         <header className={`ld-header glass ${condensed ? "condensed" : ""}`}>
           <div className="ld-header-content">
             <div className="ld-header-brand">
@@ -113,67 +126,84 @@ export default function Dashboard() {
               <div className="ld-chip glass"><span className="k">Finished</span><span className="v">{Object.values(userEnrollments).filter(s => s === "finished").length}</span></div>
               <div className="ld-chip glass"><span className="k">Time</span><span className="v">{courses.filter(c => userEnrollments[c.id] === "finished").reduce((sum, c) => sum + c.durationMin, 0)}m</span></div>
             </div>
-            <div className="ld-toggle segmented">
-              <div className={`ld-toggle-thumb ${view}`}></div>
+            <div className="ld-view-controls">
+              <div className="ld-toggle segmented">
+                <div className={`ld-toggle-thumb ${view}`}></div>
+                <button
+                  className={`ld-toggle-btn ${view === "grid" ? "active" : ""}`}
+                  onClick={() => setView("grid")}
+                  aria-label="Grid view"
+                >
+                  <LayoutGrid size={18} />
+                </button>
+                <button
+                  className={`ld-toggle-btn ${view === "list" ? "active" : ""}`}
+                  onClick={() => setView("list")}
+                  aria-label="List view"
+                >
+                  <List size={18} />
+                </button>
+              </div>
               <button
-                className={`ld-toggle-btn ${view === "grid" ? "active" : ""}`}
-                onClick={() => setView("grid")}
-                aria-label="Grid view"
+                className={`ld-focus-btn ${focusMode ? "active" : ""}`}
+                onClick={() => setFocusMode(!focusMode)}
+                aria-label="Focus mode"
+                title="Focus mode (F)"
               >
-                <LayoutGrid size={18} />
-              </button>
-              <button
-                className={`ld-toggle-btn ${view === "list" ? "active" : ""}`}
-                onClick={() => setView("list")}
-                aria-label="List view"
-              >
-                <List size={18} />
+                <Focus size={18} />
               </button>
             </div>
           </div>
         </header>
-        <div className="ld-progress-row glass" role="group" aria-label="Course progress">
-          <div className="ld-progress segments" aria-hidden="true">
-            {Array.from({ length: courses.length }).map((_, i) => (
-              <div key={i} className={`seg ${i < completedCount ? "done" : ""}`} style={{ animationDelay: `${i * 0.02}s` }} />
-            ))}
+        {!focusMode && (
+          <div className="ld-progress-row glass" role="group" aria-label="Course progress">
+            <div className="ld-progress segments" aria-hidden="true">
+              {Array.from({ length: courses.length }).map((_, i) => (
+                <div key={i} className={`seg ${i < completedCount ? "done" : ""}`} style={{ animationDelay: `${i * 0.02}s` }} />
+              ))}
+            </div>
+            <span className="ld-meta-inline">{completedCount} / {courses.length} finished</span>
           </div>
-          <span className="ld-meta-inline">{completedCount} / {courses.length} finished</span>
-        </div>
+        )}
 
         {active === "modules" && (
           <section className="ld-section">
-            <div className="ld-2col">
-              <div className="ld-left">
-                <h2 className="ld-section-title">Choose a Framework</h2>
-                <div className="ld-fw-row">
-                  <button
-                    className={`ld-fw ${selectedFramework === "all" ? "active" : ""}`}
-                    onClick={() => setSelectedFramework("all")}
-                  >All{query.trim() ? <span className="ld-badge">{visibleCourses.length}</span> : null}</button>
-                  {frameworks.map((f) => {
-                    const Icon = f.icon;
-                    return (
-                      <button
-                        key={f.key}
-                        className={`ld-fw ${selectedFramework === f.key ? "active" : ""}`}
-                        onClick={() => setSelectedFramework(f.key)}
-                      >
-                        <Icon size={16} style={{ color: f.color }} />
-                        <span>{f.name}</span>
-                      </button>
-                    );
-                  })}
+            <div className={`ld-2col ${focusMode ? "focus-mode" : ""}`}>
+              {!focusMode && (
+                <div className="ld-left">
+                  <h2 className="ld-section-title">Choose a Framework</h2>
+                  <div className="ld-fw-row">
+                    <button
+                      className={`ld-fw ${selectedFramework === "all" ? "active" : ""}`}
+                      onClick={() => setSelectedFramework("all")}
+                    >All{query.trim() ? <span className="ld-badge">{visibleCourses.length}</span> : null}</button>
+                    {frameworks.map((f) => {
+                      const Icon = f.icon;
+                      return (
+                        <button
+                          key={f.key}
+                          className={`ld-fw ${selectedFramework === f.key ? "active" : ""}`}
+                          onClick={() => setSelectedFramework(f.key)}
+                        >
+                          <Icon size={16} style={{ color: f.color }} />
+                          <span>{f.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="ld-explore-head">
+                    <h3 className="ld-section-sub">Explore New Courses</h3>
+                    <button className="ld-primary" onClick={() => { window.location.href = "/explore"; }}>
+                      Explore Courses
+                    </button>
+                  </div>
                 </div>
-                <div className="ld-explore-head">
-                  <h3 className="ld-section-sub">Explore New Courses</h3>
-                  <button className="ld-primary" onClick={() => { window.location.href = "/explore"; }}>
-                    Explore Courses
-                  </button>
-                </div>
-              </div>
+              )}
               <div className="ld-right">
-                <h3 className="ld-section-sub">Currently Enrolled</h3>
+                <div className="ld-section-header">
+                  <h3 className="ld-section-sub">Currently Enrolled</h3>
+                  {focusMode && <span className="ld-focus-badge">Focus Mode Active</span>}
+                </div>
             <div className={`ld-courses ${view}`}>
               {enrolled.map((c) => {
                 const framework = frameworks.find(f=>f.key===c.framework);
@@ -261,9 +291,11 @@ export default function Dashboard() {
         )}
 
         {/* Footer */}
-        <footer className="ld-footer">
-          <p>© 2025 CapyCode • Built for learners who refuse to quit</p>
-        </footer>
+        {!focusMode && (
+          <footer className="ld-footer">
+            <p>© 2025 CapyCode • Built for learners who refuse to quit</p>
+          </footer>
+        )}
       </main>
     </div>
   );
