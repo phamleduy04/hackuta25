@@ -49,7 +49,7 @@ export default function ChatBox() {
                                     )}
                                     {messages.map((message, index) => (
                                         <div key={index} className="flex flex-col gap-2 w-full">
-                                            <div className={cn("text-white bg-gray-900 p-2 rounded-md", message.source === "user" ? "bg-blue-500 ml-auto" : "bg-gray-900 mr-auto")}>
+                                            <div className={cn("text-white bg-gray-900 p-2 rounded-md", message.source === "user" ? "bg-white text-black ml-auto" : "bg-gray-900 mr-auto")}>
                                                 <Markdown remarkPlugins={[remarkGfm]}>{message.message}</Markdown>
                                             </div>
                                         </div>
