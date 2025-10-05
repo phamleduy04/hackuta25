@@ -116,6 +116,7 @@
   text-align: center;
   margin: 0 auto;
   transform: translateX(-75%);
+  border-bottom: 3px solid rgba(239, 238, 245, 0.25);
 }
 
 .ld-nav-btn:hover { 
@@ -138,6 +139,8 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding-top: 0.75rem; /* visual separation from nav */
+  transform: translateX(65%);
 }
 
 /* Prevent icon from shrinking in compact mode */
