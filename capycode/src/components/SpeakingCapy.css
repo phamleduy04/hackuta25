@@ -6,7 +6,7 @@
   z-index: 9999; /* ensure on top of sandpack panes */
   pointer-events: none;
 }
-
+/* Legacy styles removed. File kept intentionally empty as a stub. */
 .speaking-capy-avatar-wrapper {
   position: relative;
   width: 160px;
