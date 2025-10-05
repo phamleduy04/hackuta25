@@ -1,28 +1,14 @@
-<<<<<<< HEAD
-import React, { Suspense } from 'react';
-const PreLanding = React.lazy(() => import('./pre-landing'));
-
-function Index() {
-  return (
-    <Suspense fallback={<div />}>
-      <PreLanding />
-    </Suspense>
-  );
-}
-=======
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import DynamicBackground from "@/components/DynamicBackground";
 import GlassCard from "@/components/GlassCard";
+import SharedNav from "@/components/SharedNav";
 import "@/components/HomeBackground.css";
 import "./landing.css";
-import { useAuth0 } from "@auth0/auth0-react";
 
 const LandingPage: React.FC = () => {
-  const { loginWithRedirect } = useAuth0();
   const navigate = useNavigate();
   const sectionsRef = useRef<HTMLDivElement[]>([]);
->>>>>>> 77ee24ad00f488feaa7b0d7d91ad144eac0f9e87
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -54,26 +40,12 @@ const LandingPage: React.FC = () => {
       <DynamicBackground
         speed={35}
         scale={1.5}
-        color="#232323"
+        color="#404040"
         noiseIntensity={0.02}
         rotation={2.18}
       />
       
-      <nav className="landing-nav">
-        <a href="/" className="nav-logo">
-          CAPYCODE
-        </a>
-        <button
-          className="nav-cta"
-          onClick={() => { void loginWithRedirect({
-            authorizationParams: {
-              redirect_uri: `${window.location.origin}/dashboard`,
-            },
-          }); }}
-        >
-          Get Started
-        </button>
-      </nav>
+      <SharedNav />
 
       <div className="landing-scroll-container">
         {/* Hero Section */}
@@ -88,11 +60,7 @@ const LandingPage: React.FC = () => {
             </p>
             <button
               className="hero-cta"
-              onClick={() => { void loginWithRedirect({
-                authorizationParams: {
-                  redirect_uri: `${window.location.origin}/dashboard`,
-                },
-              }); }}
+              onClick={() => { void navigate("/dashboard"); }}
             >
               Start Building Now — Free
             </button>
