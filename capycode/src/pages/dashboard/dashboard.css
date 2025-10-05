@@ -122,6 +122,7 @@
   background: rgba(239,238,245,0.08); 
   border-color: rgba(239,238,245,0.25);
   transform: translateY(-2px);
+  transform: translateX(-75%);
 }
 
 .ld-nav-btn.active {
