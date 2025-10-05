@@ -62,8 +62,6 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
 
     const createCoachingPlan = useAction(api.agentuity.createCoachingPlan);
 
-    console.log("Agent ID", agentId);
-
     const conversation = useConversation({
         // agentId: 'agent_7801k6re9566f1990zee8hcy45k3',
         agentId: agentId,

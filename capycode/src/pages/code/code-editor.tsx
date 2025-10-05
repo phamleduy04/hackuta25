@@ -14,19 +14,21 @@ import { FrameworkEnum } from "@/contexts/voice-context";
 import { Input } from "@/components/ui/input";
 import { useVoice } from "@/hooks/use-voice";
 
+import { gruvboxDark } from "@codesandbox/sandpack-themes";
 
-export function createInitialMessage(files: Record<string, string>, template: FrameworkEnum, plan: string) {
+
+export function setContext(files: Record<string, string>, template: FrameworkEnum, plan: string) {
     // create a message from the user to the ai with the files, template, and plan
     console.log("Creating initial message", files, template, plan);
 
 
-    const initialMessage = `I have the following files: ${JSON.stringify(files)}\nI am using the following template: ${template}\nI have the following plan: ${plan}`;
+    const context = `I have the following files: ${JSON.stringify(files)}\nI am using the following template: ${template}\nI have the following plan: ${plan}`;
     localStorage.setItem("context", JSON.stringify({
         files: files,
         template: template,
         plan: plan,
     }));
-    return initialMessage;
+    return context;
 }
 
 
@@ -47,7 +49,7 @@ export default function CodeEditor() {
             if (framework_stored && plan_stored) {
                 setTemplate(JSON.parse(framework_stored) as FrameworkEnum);
                 setPlan(JSON.parse(plan_stored));
-                createInitialMessage(allViewableFiles, JSON.parse(framework_stored) as FrameworkEnum, JSON.parse(plan_stored));
+                setContext(allViewableFiles, JSON.parse(framework_stored) as FrameworkEnum, JSON.parse(plan_stored));
             }
 
             setAgentId("agent_7801k6re9566f1990zee8hcy45k3");
@@ -66,16 +68,14 @@ export default function CodeEditor() {
         setAllViewableFiles({ ...allViewableFiles, [`/${tmpFile}`]: "" });
     }
 
-
-
     return (
         <SandpackProvider
-            theme="dark"
+            theme={gruvboxDark}
             template={template}
             style={{ height: "100%" }}
             options={{
                 classes: {
-                    "sp-wrapper": "h-screen w-screen",
+                    "sp-wrapper": "h-screen w-screen dark",
                     "sp-layout": "h-full w-full",
                     "sp-tab-button": "custom-tab",
                 },
@@ -128,6 +128,7 @@ function TestComponent({ setAllViewableFiles }: { setAllViewableFiles: (files: R
     useEffect(() => {
         console.log("Sandpack files", sandpackFiles);
         setAllViewableFiles(JSON.parse(JSON.stringify(sandpackFiles)));
+
     }, [sandpackFiles, setAllViewableFiles]);
 
     return null;
