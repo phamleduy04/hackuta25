@@ -41,7 +41,7 @@ export default function Sidebar({ active, onChange }: Props) {
         <span className="ld-brand-text">CAPYCODE</span>
       </a>
 
-      <nav className="ld-nav">
+      <nav className="ld-nav w-full flex flex-col gap-2 justify-center items-center">
         <button
           className={`ld-nav-btn ${active === "modules" ? "active" : ""}`}
           onClick={() => onChange("modules")}
@@ -50,7 +50,7 @@ export default function Sidebar({ active, onChange }: Props) {
           <Library size={20} />
           <span>Modules</span>
         </button>
-        <Button onClick={startSession}>Start Session</Button>
+        <Button className="w-full cursor-pointer ld-nav-btn" onClick={startSession}>Start Session</Button>
       </nav>
 
       <div className="ld-account">

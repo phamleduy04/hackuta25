@@ -146,25 +146,23 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
   overflow: hidden;
-  width: fit-content;
+  width: 100%;
   justify-content: center;
   flex-shrink: 0;
   text-align: center;
-  margin: 0 auto;
-  transform: translateX(-75%);
+  /* margin: 0 auto; */
+  /* transform: translateX(-75%); */
   border-bottom: 3px solid rgba(239, 238, 245, 0.25);
 }
 
 .ld-nav-btn:hover { 
   background: rgba(239,238,245,0.08); 
   border-color: rgba(239,238,245,0.25);
-  transform: translateX(-75%) translateY(-2px);
 }
 
 .ld-nav-btn.active {
   background: rgba(239,238,245,0.15);
   border-color: rgba(239,238,245,0.4);
-  transform: translateX(-75%);
 }
 
 .ld-account {
@@ -174,7 +172,6 @@
   align-items: center;
   width: 100%;
   padding-top: 0.75rem; /* visual separation from nav */
-  transform: translateX(45%);
 }
 
 /* Prevent icon from shrinking in compact mode */
