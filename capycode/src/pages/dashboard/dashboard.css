@@ -432,10 +432,11 @@
 
 /* Segmented control for grid/list */
 .ld-toggle.segmented {
+  --ld-toggle-gap: 0.35rem;
   position: relative;
-  display: inline-grid;
-  grid-auto-flow: column;
-  gap: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ld-toggle-gap);
   padding: 0.25rem;
   border-radius: 12px;
   border: 1px solid rgba(239,238,245,0.2);
@@ -451,6 +452,9 @@
   cursor: pointer;
   transition: color 0.2s ease;
   color: rgba(239,238,245,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .ld-toggle.segmented .ld-toggle-btn:hover {
   color: #efeef5;
@@ -462,14 +466,14 @@
   position: absolute;
   top: 4px;
   bottom: 4px;
-  left: 4px;
+  left: 0.25rem;
   width: 38px;
   border-radius: 10px;
   background: rgba(239,238,245,0.15);
   transition: transform 0.2s ease;
   z-index: 0;
 }
-.ld-toggle-thumb.list { transform: translateX(42px); }
+.ld-toggle-thumb.list { transform: translateX(calc(100% + var(--ld-toggle-gap))); }
 
 /* Focus mode button */
 .ld-focus-btn {
