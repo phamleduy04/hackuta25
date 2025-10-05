@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { LayoutGrid, List, Search } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { LayoutGrid, List, Search, Check } from "lucide-react";
 import "./dashboard.css";
 import { frameworks, courses, userEnrollments, type FrameworkKey, type Course } from "./courses";
 import Sidebar, { type TabKey } from "./Sidebar";
@@ -7,8 +7,57 @@ import Sidebar, { type TabKey } from "./Sidebar";
 export default function Dashboard() {
   const [active, setActive] = useState<TabKey>("modules");
   const [selectedFramework, setSelectedFramework] = useState<FrameworkKey | "all">("all");
+  const [inputQuery, setInputQuery] = useState("");
   const [query, setQuery] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [condensed, setCondensed] = useState(false);
+  const mainRef = useRef<HTMLElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      setCondensed(el.scrollTop > 10);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Debounce search input => query
+  useEffect(() => {
+    const timer = setTimeout(() => setQuery(inputQuery), 250);
+    return () => clearTimeout(timer);
+  }, [inputQuery]);
+
+  // Command palette shortcut: Cmd+K / Ctrl+K focuses the search
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const isK = e.key.toLowerCase() === "k";
+      if ((e.metaKey && isK) || (e.ctrlKey && isK)) {
+        e.preventDefault();
+        const node = searchRef.current;
+        if (node) {
+          node.focus();
+          node.select();
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Subtle spotlight cursor effect
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+      document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
 
   const visibleCourses: Array<Course> = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -20,12 +69,11 @@ export default function Dashboard() {
     });
   }, [selectedFramework, query]);
 
-  const enrolled = useMemo(() => visibleCourses.filter(c => c.id in userEnrollments), [visibleCourses]);
+  const enrolled = useMemo(() => visibleCourses.filter(c => c.id in userEnrollments && userEnrollments[c.id] !== "finished"), [visibleCourses]);
   const finished = useMemo(() => visibleCourses.filter(c => userEnrollments[c.id] === "finished"), [visibleCourses]);
   // nonEnrolled only used on Explore page now
 
   const completedCount = Object.values(userEnrollments).filter(s => s === "finished").length;
-  const progressPct = Math.round((completedCount / courses.length) * 100);
 
   return (
     <div className="ld-root">
@@ -33,8 +81,8 @@ export default function Dashboard() {
       <Sidebar active={active} onChange={setActive} />
 
       {/* Main Content */}
-      <main className="ld-main">
-        <header className="ld-header glass">
+      <main className="ld-main" ref={mainRef}>
+        <header className={`ld-header glass ${condensed ? "condensed" : ""}`}>
           <div className="ld-header-content">
             <div className="ld-header-brand">
               <img 
@@ -54,11 +102,19 @@ export default function Dashboard() {
               <input
                 aria-label="Search frameworks and courses"
                 placeholder="Search frameworks and courses"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                ref={searchRef}
+                value={inputQuery}
+                onChange={(e) => setInputQuery(e.target.value)}
               />
+              <span className="ld-hint">⌘K / Ctrl K</span>
             </div>
-            <div className="ld-toggle">
+            <div className="ld-stats">
+              <div className="ld-chip glass"><span className="k">Enrolled</span><span className="v">{Object.keys(userEnrollments).length}</span></div>
+              <div className="ld-chip glass"><span className="k">Finished</span><span className="v">{Object.values(userEnrollments).filter(s => s === "finished").length}</span></div>
+              <div className="ld-chip glass"><span className="k">Time</span><span className="v">{courses.filter(c => userEnrollments[c.id] === "finished").reduce((sum, c) => sum + c.durationMin, 0)}m</span></div>
+            </div>
+            <div className="ld-toggle segmented">
+              <div className={`ld-toggle-thumb ${view}`}></div>
               <button
                 className={`ld-toggle-btn ${view === "grid" ? "active" : ""}`}
                 onClick={() => setView("grid")}
@@ -76,41 +132,61 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
-        <div className="ld-progress glass" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100}>
-          <div className="bar" style={{ width: `${progressPct}%` }} />
+        <div className="ld-progress-row glass" role="group" aria-label="Course progress">
+          <div className="ld-progress segments" aria-hidden="true">
+            {Array.from({ length: courses.length }).map((_, i) => (
+              <div key={i} className={`seg ${i < completedCount ? "done" : ""}`} style={{ animationDelay: `${i * 0.02}s` }} />
+            ))}
+          </div>
+          <span className="ld-meta-inline">{completedCount} / {courses.length} finished</span>
         </div>
-        <div className="meta">{completedCount} finished • {courses.length} total ({progressPct}%)</div>
 
         {active === "modules" && (
           <section className="ld-section">
-            <h2 className="ld-section-title">Choose a Framework</h2>
-            <div className="ld-fw-row">
-              <button
-                className={`ld-fw ${selectedFramework === "all" ? "active" : ""}`}
-                onClick={() => setSelectedFramework("all")}
-              >All</button>
-              {frameworks.map((f) => {
-                const Icon = f.icon;
-                return (
+            <div className="ld-2col">
+              <div className="ld-left">
+                <h2 className="ld-section-title">Choose a Framework</h2>
+                <div className="ld-fw-row">
                   <button
-                    key={f.key}
-                    className={`ld-fw ${selectedFramework === f.key ? "active" : ""}`}
-                    onClick={() => setSelectedFramework(f.key)}
-                  >
-                    <Icon size={16} style={{ color: f.color }} />
-                    <span>{f.name}</span>
+                    className={`ld-fw ${selectedFramework === "all" ? "active" : ""}`}
+                    onClick={() => setSelectedFramework("all")}
+                  >All{query.trim() ? <span className="ld-badge">{visibleCourses.length}</span> : null}</button>
+                  {frameworks.map((f) => {
+                    const Icon = f.icon;
+                    return (
+                      <button
+                        key={f.key}
+                        className={`ld-fw ${selectedFramework === f.key ? "active" : ""}`}
+                        onClick={() => setSelectedFramework(f.key)}
+                      >
+                        <Icon size={16} style={{ color: f.color }} />
+                        <span>{f.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="ld-explore-head">
+                  <h3 className="ld-section-sub">Explore New Courses</h3>
+                  <button className="ld-primary" onClick={() => { window.location.href = "/explore"; }}>
+                    Explore Courses
                   </button>
-                );
-              })}
-            </div>
-
-            <h3 className="ld-section-sub">Your Courses</h3>
+                </div>
+              </div>
+              <div className="ld-right">
+                <h3 className="ld-section-sub">Currently Enrolled</h3>
             <div className={`ld-courses ${view}`}>
               {enrolled.map((c) => {
                 const framework = frameworks.find(f=>f.key===c.framework);
                 const Icon = framework?.icon;
                 return (
                   <button key={c.id} className={`ld-course glass ${view}`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
+                    <div className="ld-course-badges">
+                      <span className="ld-pill">{c.difficulty}</span>
+                      <span className="ld-pill alt">{c.durationMin}m</span>
+                      {userEnrollments[c.id] === "finished" ? (
+                        <span className="ld-pill check" aria-label="Finished"><Check size={14} /></span>
+                      ) : null}
+                    </div>
                     {Icon && (
                       <div className="ld-course-icon" style={{ backgroundColor: `${framework.color}15`, borderColor: `${framework.color}40` }}>
                         <Icon size={24} style={{ color: framework.color }} />
@@ -126,36 +202,36 @@ export default function Dashboard() {
               {enrolled.length === 0 && <div className="ld-empty">You haven't enrolled in any courses yet.</div>}
             </div>
 
-            {finished.length > 0 && (
-              <>
-                <h3 className="ld-section-sub">Finished</h3>
-                <div className={`ld-courses ${view}`}>
-                  {finished.map((c) => {
-                    const framework = frameworks.find(f=>f.key===c.framework);
-                    const Icon = framework?.icon;
-                    return (
-                      <button key={c.id} className={`ld-course glass ${view} finished`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
-                        {Icon && (
-                          <div className="ld-course-icon" style={{ backgroundColor: `${framework.color}15`, borderColor: `${framework.color}40` }}>
-                            <Icon size={24} style={{ color: framework.color }} />
-                          </div>
-                        )}
-                        <div className="ld-course-main">
-                          <div className="ld-course-title">{c.title}</div>
-                          <div className="ld-course-meta">Finished • {framework?.name} • {c.durationMin}m</div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-
-            <div className="ld-explore-head">
-              <h3 className="ld-section-sub">Explore New Courses</h3>
-              <button className="ld-primary" onClick={() => { window.location.href = "/explore"; }}>
-                Explore Courses
-              </button>
+                {finished.length > 0 && (
+                  <>
+                    <h3 className="ld-section-sub">Finished</h3>
+                    <div className={`ld-courses ${view}`}>
+                      {finished.map((c) => {
+                        const framework = frameworks.find(f=>f.key===c.framework);
+                        const Icon = framework?.icon;
+                        return (
+                          <button key={c.id} className={`ld-course glass ${view} finished`} onClick={() => { window.location.href = `/modules/${c.id}`; }}>
+                            <div className="ld-course-badges">
+                              <span className="ld-pill">{c.difficulty}</span>
+                              <span className="ld-pill alt">{c.durationMin}m</span>
+                              <span className="ld-pill check" aria-label="Finished"><Check size={14} /></span>
+                            </div>
+                            {Icon && (
+                              <div className="ld-course-icon" style={{ backgroundColor: `${framework.color}15`, borderColor: `${framework.color}40` }}>
+                                <Icon size={24} style={{ color: framework.color }} />
+                              </div>
+                            )}
+                            <div className="ld-course-main">
+                              <div className="ld-course-title">{c.title}</div>
+                              <div className="ld-course-meta">Finished • {framework?.name} • {c.durationMin}m</div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </section>
         )}
