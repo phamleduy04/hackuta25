@@ -8,6 +8,7 @@ const PreLanding: React.FC = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [isGlowing, setIsGlowing] = useState(false);
+  const [isGlitching, setIsGlitching] = useState(false);
   const [isPushingOut, setIsPushingOut] = useState(false);
 
   useEffect(() => {
@@ -17,9 +18,15 @@ const PreLanding: React.FC = () => {
       setIsGlowing(true);
     }, 100);
 
-    // After visible and glowing for 3s, start push-out animation
-    const showTimer = setTimeout(() => {
+    // After 4 seconds of glow, start glitch effect
+    const glitchTimer = setTimeout(() => {
       setIsGlowing(false);
+      setIsGlitching(true);
+    }, 1400); // 1.2 seconds of glow + small delay
+
+    // After 500ms of glitching, start push-out animation
+    const pushTimer = setTimeout(() => {
+      setIsGlitching(false);
       setIsPushingOut(true);
       
       // Navigate after push-out animation completes
@@ -28,11 +35,12 @@ const PreLanding: React.FC = () => {
       }, 800); // match CSS push-out duration
       
       return () => clearTimeout(navTimer);
-    }, 3100); // 3 seconds of glow + small delay
+    }, 2500); // 4s glow + 500ms glitch + small delay
 
     return () => {
       clearTimeout(inTimer);
-      clearTimeout(showTimer);
+      clearTimeout(glitchTimer);
+      clearTimeout(pushTimer);
     };
   }, [navigate]);
 
@@ -45,6 +53,8 @@ const PreLanding: React.FC = () => {
           isVisible ? 'fade-in' : ''
         } ${
           isGlowing ? 'glowing' : ''
+        } ${
+          isGlitching ? 'glitching' : ''
         } ${
           isPushingOut ? 'push-up' : ''
         }`}>
