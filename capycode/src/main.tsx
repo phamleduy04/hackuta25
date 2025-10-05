@@ -1,5 +1,7 @@
 import { ConvexReactClient } from "convex/react";
 import Background from "./components/Background";
+import { VoiceProvider } from "@/contexts/voice-context";
+import StaticCapyCharacter from "@/components/StaticCapyCharacter";
 import "./index.css";
 import { ConvexProviderWithAuth0 } from "convex/react-auth0";
 import { Auth0Provider } from "@auth0/auth0-react";
@@ -35,9 +37,12 @@ createRoot(document.getElementById("root")!).render(
         cacheLocation="localstorage"
       >
         <ConvexProviderWithAuth0 client={convex}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <VoiceProvider>
+            <BrowserRouter>
+              <App />
+              <StaticCapyCharacter />
+            </BrowserRouter>
+          </VoiceProvider>
         </ConvexProviderWithAuth0>
       </Auth0Provider>
     </StrictMode>

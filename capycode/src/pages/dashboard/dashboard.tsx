@@ -3,6 +3,8 @@ import { LayoutGrid, List, Search, Check } from "lucide-react";
 import "./dashboard.css";
 import { frameworks, courses, userEnrollments, type FrameworkKey, type Course } from "./courses";
 import Sidebar, { type TabKey } from "./Sidebar";
+import { useAuth0 } from "@auth0/auth0-react";
+import StaticCapyCharacter from "@/components/StaticCapyCharacter";
 
 export default function Dashboard() {
     const [active, setActive] = useState<TabKey>("modules");
@@ -13,6 +15,8 @@ export default function Dashboard() {
     const [condensed, setCondensed] = useState(false);
     const mainRef = useRef<HTMLElement | null>(null);
     const searchRef = useRef<HTMLInputElement | null>(null);
+
+    const { logout } = useAuth0();
 
     useEffect(() => {
         const el = mainRef.current;
@@ -254,7 +258,7 @@ export default function Dashboard() {
                             <div className="row actions">
                                 <button className="ld-primary">Save Changes</button>
                                 <button className="ld-danger">Delete Account</button>
-                                <button className="ld-secondary">Logout</button>
+                                <button onClick={() => logout()} className="ld-secondary">Logout</button>
                             </div>
                         </div>
                     </section>
@@ -265,6 +269,9 @@ export default function Dashboard() {
                     <p>© 2025 CapyCode • Built for learners who refuse to quit</p>
                 </footer>
             </main>
+
+            {/* Static Character - Always visible */}
+            <StaticCapyCharacter />
         </div>
     );
 }

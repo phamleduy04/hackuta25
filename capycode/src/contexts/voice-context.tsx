@@ -24,7 +24,7 @@ export enum FrameworkEnum {
 
 export const VoiceContext = createContext<{
     isMicOn: boolean;
-    requestMic: () => void;
+    requestMic: () => Promise<void>;
     startSession: () => void;
     endSession: () => void;
     pauseSession: () => void;
@@ -32,9 +32,12 @@ export const VoiceContext = createContext<{
     conversationStatus: Status;
     messages: Message[];
     setAgentId: (agentId: string) => void;
+    isSpeaking?: boolean;
+    lastAssistantText?: string;
+    isSessionActive: boolean;
 }>({
     isMicOn: false,
-    requestMic: () => { },
+    requestMic: async () => { },
     startSession: () => { },
     endSession: () => { },
     pauseSession: () => { },
@@ -42,6 +45,9 @@ export const VoiceContext = createContext<{
     conversationStatus: "stopped",
     messages: [],
     setAgentId: () => { },
+    isSpeaking: false,
+    lastAssistantText: undefined,
+    isSessionActive: false,
 });
 
 // create a provider that can be used to access the microphone
@@ -49,9 +55,11 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const [isMicOn, setIsMicOn] = useState(false);
     const [conversationStatus, setConversationStatus] = useState<Status>("stopped");
     const [messages, setMessages] = useState<Message[]>([]);
+    const [lastAssistantText, setLastAssistantText] = useState<string | undefined>();
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const [framework, setFramework] = useState<FrameworkEnum>(FrameworkEnum.react);
     const [agentId, setAgentId] = useState<string>("agent_8101k6ryej6nf3v8c47f035d094p");
+    const [isSessionActive, setIsSessionActive] = useState<boolean>(false);
 
     const interval = useRef<NodeJS.Timeout | null>(null);
     const redirectLink = useRef<string | null>(null);
@@ -61,8 +69,11 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const conversation = useConversation({
         agentId: agentId,
         connectionType: 'webrtc',
-        onMessage: (message) => {
+        onMessage: (message: any) => {
             setMessages(prev => [...prev, message]);
+            if (message.source === "agent") {
+                setLastAssistantText(message.message);
+            }
         },
         clientTools: {
             set_framework: (framework: any) => {
@@ -108,17 +119,25 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     }, [conversation.isSpeaking]);
 
     const startSession = useCallback(() => {
-        console.log("Starting session");
+        console.log("🚀 Starting session - setting isSessionActive to true");
         setConversationStatus("starting");
-        conversation.startSession().then(() => {
+        setIsSessionActive(true);
+        console.log("✅ isSessionActive set to true");
+        void conversation.startSession().then(() => {
+            console.log("✅ Session started successfully");
             setConversationStatus("started");
+        }).catch((err: unknown) => {
+            console.error("❌ Failed to start session", err);
+            setConversationStatus("stopped");
+            setIsSessionActive(false);
         });
     }, [conversation]);
 
     const endSession = useCallback(() => {
-        conversation.endSession().then(() => {
+        void conversation.endSession().then(() => {
             setConversationStatus("stopped");
-        });
+            setIsSessionActive(false);
+        }).catch((err: unknown) => console.error("Failed to end session", err));
     }, [conversation]);
 
     const pauseSession = useCallback(() => {
@@ -154,7 +173,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     useEffect(() => {
-        requestMic();
+        void requestMic();
     }, [requestMic]);
 
     return (
@@ -167,7 +186,10 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
             pauseSession, 
             resumeSession, 
             messages, 
-            setAgentId
+            setAgentId,
+            isSpeaking: conversation.isSpeaking,
+            lastAssistantText,
+            isSessionActive
         }}>
             {children}
         </VoiceContext.Provider>
