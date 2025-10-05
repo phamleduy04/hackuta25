@@ -1,6 +1,8 @@
 // create a context that can be used to access the microphone
 
 import { Role, useConversation, VoiceConversation } from "@elevenlabs/react";
+import { api } from '../../convex/_generated/api';
+import { useAction } from "convex/react";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 
 export type Message = {
@@ -29,6 +31,8 @@ export const VoiceContext = createContext<{
     resumeSession: () => void;
     conversationStatus: Status;
     messages: Message[];
+    setAgentId: (agentId: string) => void;
+    setFirstMessage: (message: string) => void;
 }>({
     isMicOn: false,
     requestMic: () => { },
@@ -38,6 +42,8 @@ export const VoiceContext = createContext<{
     resumeSession: () => { },
     conversationStatus: "stopped",
     messages: [],
+    setAgentId: () => { },
+    setFirstMessage: () => { },
 });
 
 // create a provider that can be used to access the microphone
@@ -48,11 +54,19 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const [framework, setFramework] = useState<FrameworkEnum>(FrameworkEnum.react);
 
+    const [agentId, setAgentId] = useState<string>("agent_8101k6ryej6nf3v8c47f035d094p");
+    const [firstMessage, setFirstMessage] = useState<string>("");
+
     const interval = useRef<NodeJS.Timeout | null>(null);
     const redirectLink = useRef<string | null>(null);
 
+    const createCoachingPlan = useAction(api.agentuity.createCoachingPlan);
+
+    console.log("Agent ID", agentId);
+
     const conversation = useConversation({
-        agentId: 'agent_7801k6re9566f1990zee8hcy45k3',
+        // agentId: 'agent_7801k6re9566f1990zee8hcy45k3',
+        agentId: agentId,
         connectionType: 'webrtc', // either "webrtc" or "websocket"
         onMessage: (message) => {
             window.dispatchEvent(new CustomEvent("conversation-message", {
@@ -62,23 +76,33 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
             }));
         },
         clientTools: {
-            set_framework: (framework: FrameworkEnum) => {
-                if (!Object.values(FrameworkEnum).includes(framework)) {
+            set_framework: (framework: any) => {
+                console.log("Setting framework", framework.framework);
+                if (!Object.values(FrameworkEnum).includes(framework.framework)) {
                     throw new Error("Invalid framework");
                 }
                 window.dispatchEvent(new CustomEvent("framework", {
                     detail: {
-                        framework: framework,
+                        framework: framework.framework,
                     }
                 }));
                 return "Framework set";
+            },
+            create_plan: (prompt: any) => {
+                console.log("Creating plan", framework, prompt);
+                createCoachingPlan({
+                    framework: framework ?? FrameworkEnum.react,
+                    goal: prompt.prompt,
+                }).then((plan) => {
+                    localStorage.setItem("plan", JSON.stringify(plan));
+                    return "Plan created";
+                });
             },
             send_plan: (plan: string) => {
                 console.log("Plan", plan);
 
                 // save the framework, plan, and conversation to local storage
                 localStorage.setItem("framework", JSON.stringify(framework));
-                localStorage.setItem("plan", JSON.stringify(plan));
                 localStorage.setItem("conversation", JSON.stringify(messages));
 
                 setTimeout(() => {
@@ -88,6 +112,12 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
                         }
                     }));
                 }, 1000);
+            },
+            get_context: () => {
+                // get context from local storage
+                const context = localStorage.getItem("context") ?? "";
+                console.log("Context", context);
+                return JSON.parse(context);
             },
         },
     });
@@ -102,20 +132,20 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
 
     }, [conversation.isSpeaking]);
 
-    const startSession = () => {
+    const startSession = useCallback(() => {
         console.log("Starting session");
         setConversationStatus("starting");
         conversation.startSession().then(() => {
             setConversationStatus("started");
         });
-    }
-    const endSession = () => {
+    }, [conversation]);
+    const endSession = useCallback(() => {
         conversation.endSession().then(() => {
             setConversationStatus("stopped");
         });
-    }
+    }, [conversation]);
 
-    const pauseSession = () => {
+    const pauseSession = useCallback(() => {
         if (isPaused || interval.current) return;
 
         // mute the mic
@@ -126,9 +156,9 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         }, 1000);
         setIsPaused(true);
         setConversationStatus("paused");
-    }
+    }, [conversation]);
 
-    const resumeSession = () => {
+    const resumeSession = useCallback(() => {
         if (!isPaused || !interval.current) return;
 
         // unmute the mic
@@ -138,7 +168,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         interval.current = null;
         setIsPaused(false);
         setConversationStatus("started");
-    }
+    }, [conversation]);
 
     useEffect(() => {
         // check if the mic is on
@@ -162,7 +192,6 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
 
         window.addEventListener("load-session", loadSession as unknown as EventListener);
         window.addEventListener("framework", handleFramework as unknown as EventListener);
-
         return () => {
             window.removeEventListener("load-session", loadSession as unknown as EventListener);
             window.removeEventListener("framework", handleFramework as unknown as EventListener);
@@ -191,7 +220,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         });
     });
 
-    return (<VoiceContext.Provider value={{ isMicOn, requestMic, startSession, endSession, conversationStatus, pauseSession, resumeSession, messages }}>
+    return (<VoiceContext.Provider value={{ isMicOn, requestMic, startSession, endSession, conversationStatus, pauseSession, resumeSession, messages, setAgentId, setFirstMessage }}>
         {children}
     </VoiceContext.Provider>);
 }
