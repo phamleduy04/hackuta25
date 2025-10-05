@@ -9,7 +9,7 @@ import {
 } from "@codesandbox/sandpack-react";
 import ChatBox from "./chat-box";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FrameworkEnum } from "@/contexts/voice-context";
 import { Input } from "@/components/ui/input";
 import { useVoice } from "@/hooks/use-voice";
@@ -17,53 +17,44 @@ import { useVoice } from "@/hooks/use-voice";
 import { gruvboxDark } from "@codesandbox/sandpack-themes";
 
 
-export function setContext(files: Record<string, string>, template: FrameworkEnum, plan: string) {
-    // create a message from the user to the ai with the files, template, and plan
-    console.log("Creating initial message", files, template, plan);
-
-
-    const context = `I have the following files: ${JSON.stringify(files)}\nI am using the following template: ${template}\nI have the following plan: ${plan}`;
+function setContext(files: Record<string, string>, template: FrameworkEnum, plan: string) {
+    console.log("Setting context", { files, template, plan });
     localStorage.setItem("context", JSON.stringify({
-        files: files,
-        template: template,
-        plan: plan,
+        files,
+        template,
+        plan,
     }));
-    return context;
 }
 
-
-// create a code editor component
 export default function CodeEditor() {
-    const { setAgentId, setFirstMessage } = useVoice();
-
+    const { setAgentId } = useVoice();
     const [template, setTemplate] = useState<FrameworkEnum>(FrameworkEnum.react);
-    const [plan, setPlan] = useState<string>("");
     const [allViewableFiles, setAllViewableFiles] = useState<Record<string, string>>({});
+    const [fileName, setFileName] = useState<string>("");
+    const [customFiles, setCustomFiles] = useState<Record<string, string>>({});
+    const initialized = useRef(false);
 
     useEffect(() => {
+        if (Object.keys(allViewableFiles).length === 0 || initialized.current) return;
 
-        if (Object.keys(allViewableFiles).length > 0) {
-
-            const framework_stored = window.localStorage.getItem("framework");
-            const plan_stored = window.localStorage.getItem("plan");
-            if (framework_stored && plan_stored) {
-                setTemplate(JSON.parse(framework_stored) as FrameworkEnum);
-                setPlan(JSON.parse(plan_stored));
-                setContext(allViewableFiles, JSON.parse(framework_stored) as FrameworkEnum, JSON.parse(plan_stored));
-            }
-
+        const frameworkStored = localStorage.getItem("framework");
+        const planStored = localStorage.getItem("plan");
+        
+        if (frameworkStored && planStored) {
+            const parsedFramework = JSON.parse(frameworkStored) as FrameworkEnum;
+            const parsedPlan = JSON.parse(planStored);
+            setTemplate(parsedFramework);
+            setContext(allViewableFiles, parsedFramework, parsedPlan);
             setAgentId("agent_7801k6re9566f1990zee8hcy45k3");
+            initialized.current = true;
         }
-    }, [allViewableFiles]);
 
-    const [fileName, setFileName] = useState<string>("");
-
-    const [customFiles, setCustomFiles] = useState<Record<string, string>>({});
+    }, [allViewableFiles, setAgentId]);
 
     const addFile = () => {
-        const tmpFile = fileName.length > 0 ? fileName : "New File";
-        setCustomFiles({ ...customFiles, [`/${tmpFile}`]: "" });
-        setAllViewableFiles({ ...allViewableFiles, ...customFiles });
+        const newFileName = fileName.trim() || "New File";
+        setCustomFiles(prev => ({ ...prev, [`/${newFileName}`]: "" }));
+        setFileName("");
     }
 
     return (
@@ -71,7 +62,7 @@ export default function CodeEditor() {
             theme={gruvboxDark}
             template={template}
             style={{ height: "100%" }}
-            files={{ ...allViewableFiles, ...customFiles }}
+            files={customFiles}
             options={{
                 classes: {
                     "sp-wrapper": "h-screen w-screen dark",
@@ -80,15 +71,19 @@ export default function CodeEditor() {
                 },
             }}
         >
-            <TestComponent setAllViewableFiles={setAllViewableFiles} />
+            <SandpackFilesSync setAllViewableFiles={setAllViewableFiles} />
             <SandpackLayout >
                 <ResizablePanelGroup direction="horizontal">
                     <ResizablePanel defaultSize={20} minSize={10} className="relative">
                         <SandpackFileExplorer style={{ height: "100%" }} />
                         <div className="absolute bottom-0 w-full p-2 gap-2 flex flex-col">
-                            {/* <Input className="w-full" placeholder="Folder Name" value={folderName} onChange={(e) => setFolderName(e.target.value)} />
-                            <Button className="w-full" variant="outline" onClick={addFolder}>Add Folder</Button> */}
-                            <Input className="w-full" placeholder="File Name" value={fileName} onChange={(e) => setFileName(e.target.value)} />
+                            <Input 
+                                className="w-full" 
+                                placeholder="File Name" 
+                                value={fileName} 
+                                onChange={(e) => setFileName(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && addFile()}
+                            />
                             <Button className="w-full" onClick={addFile}>Add File</Button>
                         </div>
                     </ResizablePanel>
@@ -119,16 +114,22 @@ export default function CodeEditor() {
     )
 }
 
-function TestComponent({ setAllViewableFiles }: { setAllViewableFiles: (files: Record<string, string>) => void }) {
-
+function SandpackFilesSync({ setAllViewableFiles }: { setAllViewableFiles: (files: Record<string, string>) => void }) {
     const { sandpack } = useSandpack();
-    const { files: sandpackFiles } = sandpack;
+    const previousFilesRef = useRef<string>("");
+    const syncedRef = useRef(false);
 
     useEffect(() => {
-        console.log("Sandpack files", sandpackFiles);
-        setAllViewableFiles(JSON.parse(JSON.stringify(sandpackFiles)));
-
-    }, [sandpackFiles, setAllViewableFiles]);
+        // Only sync once on mount or when files actually change
+        const currentFilesStr = JSON.stringify(sandpack.files);
+        
+        if (!syncedRef.current || currentFilesStr !== previousFilesRef.current) {
+            console.log("Syncing Sandpack files", sandpack.files);
+            setAllViewableFiles(JSON.parse(JSON.stringify(sandpack.files)));
+            previousFilesRef.current = currentFilesStr;
+            syncedRef.current = true;
+        }
+    }, [sandpack.files, setAllViewableFiles]);
 
     return null;
 }
