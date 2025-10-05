@@ -115,6 +115,7 @@
   flex-shrink: 0;
   text-align: center;
   margin: 0 auto;
+  transform: translateX(-75%);
 }
 
 .ld-nav-btn:hover { 
