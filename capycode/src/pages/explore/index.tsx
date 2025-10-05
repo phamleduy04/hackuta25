@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Search, ArrowRight, Clock, TrendingUp, Sparkles } from "lucide-react";
 import "./explore.css";
 import { frameworks, courses, userEnrollments, type FrameworkKey, type Course } from "../dashboard/courses";
@@ -19,6 +19,18 @@ export default function ExploreCourses() {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<FrameworkKey | "all">("all");
   const [query, setQuery] = useState("");
+
+  // Subtle spotlight cursor effect
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+      document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
 
   const nonEnrolled: Array<Course> = useMemo(() => {
     const q = query.trim().toLowerCase();
