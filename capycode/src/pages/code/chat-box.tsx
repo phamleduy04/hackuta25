@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-export default function ChatBox() {
+export default function ChatBox({ getFeedback }: { getFeedback: () => void }) {
     const { messages } = useVoice();
     const [plan, setPlan] = useState<string>("");
     const [tab, setTab] = useState<string>("plan");
@@ -22,7 +22,7 @@ export default function ChatBox() {
     return (
         <div className="relative h-full">
             <div className="absolute bottom-0 p-2 z-10 w-full flex justify-center items-center">
-                <ChatToolbar />
+                <ChatToolbar getFeedback={getFeedback} />
             </div>
             <Tabs value={tab} onValueChange={setTab} className="w-full h-full flex justify-center">
                 <div className="absolute top-0 left-0 w-full p-4 z-10">
@@ -62,7 +62,7 @@ export default function ChatBox() {
     )
 }
 
-function ChatToolbar() {
+function ChatToolbar({ getFeedback }: { getFeedback: () => void }) {
     const { isMicOn, requestMic, startSession, conversationStatus, endSession, pauseSession, resumeSession } = useVoice();
 
     if (!isMicOn) {
@@ -79,7 +79,11 @@ function ChatToolbar() {
 
     return (
         <div className="flex gap-2">
-            <Button onClick={endSession}>Stop Session</Button>
+            <Button onClick={getFeedback}>Get Feedback</Button>
+            <Button onClick={() => {
+                endSession();
+                getFeedback();
+            }}>Stop Session</Button>
             <Button onClick={conversationStatus === "paused" ? resumeSession : pauseSession}>
                 {conversationStatus === "paused" ? "Resume" : "Pause"} Session
             </Button>
