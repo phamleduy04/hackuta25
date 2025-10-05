@@ -24,7 +24,7 @@ export enum FrameworkEnum {
 
 export const VoiceContext = createContext<{
     isMicOn: boolean;
-    requestMic: () => void;
+    requestMic: () => Promise<void>;
     startSession: () => void;
     endSession: () => void;
     pauseSession: () => void;
@@ -32,9 +32,11 @@ export const VoiceContext = createContext<{
     conversationStatus: Status;
     messages: Message[];
     setAgentId: (agentId: string) => void;
+    isSpeaking?: boolean;
+    lastAssistantText?: string;
 }>({
     isMicOn: false,
-    requestMic: () => { },
+    requestMic: async () => { },
     startSession: () => { },
     endSession: () => { },
     pauseSession: () => { },
@@ -42,6 +44,8 @@ export const VoiceContext = createContext<{
     conversationStatus: "stopped",
     messages: [],
     setAgentId: () => { },
+    isSpeaking: false,
+    lastAssistantText: undefined,
 });
 
 // create a provider that can be used to access the microphone
@@ -49,6 +53,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const [isMicOn, setIsMicOn] = useState(false);
     const [conversationStatus, setConversationStatus] = useState<Status>("stopped");
     const [messages, setMessages] = useState<Message[]>([]);
+    const [lastAssistantText, setLastAssistantText] = useState<string | undefined>();
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const [framework, setFramework] = useState<FrameworkEnum>(FrameworkEnum.react);
     const [agentId, setAgentId] = useState<string>("agent_8101k6ryej6nf3v8c47f035d094p");
@@ -61,8 +66,11 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const conversation = useConversation({
         agentId: agentId,
         connectionType: 'webrtc',
-        onMessage: (message) => {
+        onMessage: (message: any) => {
             setMessages(prev => [...prev, message]);
+            if (message.source === "agent") {
+                setLastAssistantText(message.message);
+            }
         },
         clientTools: {
             set_framework: (framework: any) => {
@@ -110,15 +118,18 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const startSession = useCallback(() => {
         console.log("Starting session");
         setConversationStatus("starting");
-        conversation.startSession().then(() => {
+        void conversation.startSession().then(() => {
             setConversationStatus("started");
+        }).catch((err: unknown) => {
+            console.error("Failed to start session", err);
+            setConversationStatus("stopped");
         });
     }, [conversation]);
 
     const endSession = useCallback(() => {
-        conversation.endSession().then(() => {
+        void conversation.endSession().then(() => {
             setConversationStatus("stopped");
-        });
+        }).catch((err: unknown) => console.error("Failed to end session", err));
     }, [conversation]);
 
     const pauseSession = useCallback(() => {
@@ -154,7 +165,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     useEffect(() => {
-        requestMic();
+        void requestMic();
     }, [requestMic]);
 
     return (
@@ -167,7 +178,9 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
             pauseSession, 
             resumeSession, 
             messages, 
-            setAgentId
+            setAgentId,
+            isSpeaking: conversation.isSpeaking,
+            lastAssistantText
         }}>
             {children}
         </VoiceContext.Provider>
