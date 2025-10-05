@@ -34,6 +34,7 @@ export const VoiceContext = createContext<{
     setAgentId: (agentId: string) => void;
     isSpeaking?: boolean;
     lastAssistantText?: string;
+    isSessionActive: boolean;
 }>({
     isMicOn: false,
     requestMic: async () => { },
@@ -46,6 +47,7 @@ export const VoiceContext = createContext<{
     setAgentId: () => { },
     isSpeaking: false,
     lastAssistantText: undefined,
+    isSessionActive: false,
 });
 
 // create a provider that can be used to access the microphone
@@ -57,6 +59,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     const [isPaused, setIsPaused] = useState<boolean>(false);
     const [framework, setFramework] = useState<FrameworkEnum>(FrameworkEnum.react);
     const [agentId, setAgentId] = useState<string>("agent_8101k6ryej6nf3v8c47f035d094p");
+    const [isSessionActive, setIsSessionActive] = useState<boolean>(false);
 
     const interval = useRef<NodeJS.Timeout | null>(null);
     const redirectLink = useRef<string | null>(null);
@@ -116,19 +119,24 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     }, [conversation.isSpeaking]);
 
     const startSession = useCallback(() => {
-        console.log("Starting session");
+        console.log("🚀 Starting session - setting isSessionActive to true");
         setConversationStatus("starting");
+        setIsSessionActive(true);
+        console.log("✅ isSessionActive set to true");
         void conversation.startSession().then(() => {
+            console.log("✅ Session started successfully");
             setConversationStatus("started");
         }).catch((err: unknown) => {
-            console.error("Failed to start session", err);
+            console.error("❌ Failed to start session", err);
             setConversationStatus("stopped");
+            setIsSessionActive(false);
         });
     }, [conversation]);
 
     const endSession = useCallback(() => {
         void conversation.endSession().then(() => {
             setConversationStatus("stopped");
+            setIsSessionActive(false);
         }).catch((err: unknown) => console.error("Failed to end session", err));
     }, [conversation]);
 
@@ -180,7 +188,8 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
             messages, 
             setAgentId,
             isSpeaking: conversation.isSpeaking,
-            lastAssistantText
+            lastAssistantText,
+            isSessionActive
         }}>
             {children}
         </VoiceContext.Provider>

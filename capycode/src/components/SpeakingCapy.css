@@ -3,7 +3,7 @@
   bottom: 1.5rem;
   right: 1.5rem;
   width: 170px;
-  z-index: 60;
+  z-index: 9999; /* ensure on top of sandpack panes */
   pointer-events: none;
 }
 
@@ -12,11 +12,13 @@
   width: 160px;
   height: 160px;
   filter: grayscale(100%) brightness(0.7);
-  transition: filter 280ms ease, transform 280ms ease;
+  transition: filter 280ms ease, transform 280ms ease, opacity 200ms ease;
+  opacity: .9;
 }
 
 .speaking-capy-avatar-wrapper.is-speaking {
   filter: none;
+  opacity: 1;
   animation: capyPulse 2.2s ease-in-out infinite;
 }
 

@@ -1,0 +1,118 @@
+/* Static Capybara Character - Always visible */
+.static-capy-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 180px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.static-capy-avatar-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  filter: grayscale(100%) brightness(0.65) opacity(0.85);
+  transition: filter 280ms ease, transform 280ms ease, opacity 220ms ease;
+}
+
+.static-capy-avatar-wrapper.speaking {
+  filter: none;
+  animation: capyPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes capyPulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+}
+
+.static-capy-avatar-wrapper.twitch {
+  animation: capyTwitch 420ms cubic-bezier(.65,.05,.36,1), capyPulse 2.2s ease-in-out infinite 420ms;
+}
+@keyframes capyTwitch {
+  0% { transform: translateY(0) scale(1); }
+  20% { transform: translateY(-6px) scale(1.04); }
+  42% { transform: translateY(2px) scale(0.99); }
+  65% { transform: translateY(-3px) scale(1.015); }
+  82% { transform: translateY(1px) scale(1.002); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Optional: Add a subtle idle animation */
+/* Float only while idle */
+.static-capy-avatar-wrapper.idle { animation: subtleFloat 5s ease-in-out infinite; }
+
+@keyframes subtleFloat {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-8px); 
+  }
+}
+
+.static-capy-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+
+/* If you want to add a hover effect */
+.static-capy-avatar-wrapper:hover {
+  filter: grayscale(100%) brightness(0.75) opacity(1);
+  transform: scale(1.05);
+}
+
+/* Speech bubble */
+.capy-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translate(-50%, -12px);
+  background: #ffffff;
+  color: #111827;
+  padding: 0.7rem 0.85rem 0.8rem;
+  border-radius: 14px;
+  max-width: 260px;
+  font-size: 0.82rem;
+  line-height: 1.15rem;
+  box-shadow: 0 10px 28px -8px rgba(0,0,0,0.35), 0 2px 4px -2px rgba(0,0,0,0.15);
+  border: 1px solid rgba(0,0,0,0.08);
+  backdrop-filter: blur(6px) saturate(140%);
+  opacity: 0;
+  transform-origin: bottom center;
+  animation: bubbleIn 220ms cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes bubbleIn {
+  0% { opacity: 0; transform: translate(-50%, -6px) scale(.85); }
+  100% { opacity: 1; transform: translate(-50%, -12px) scale(1); }
+}
+.capy-bubble:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 12px solid #ffffff;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.08));
+}
+.capy-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .55;
+  margin-bottom: 2px;
+}
+.typing-dots { display:inline-flex; gap:3px; }
+.typing-dots span { width:5px; height:5px; background:#9ca3af; border-radius:50%; animation: dotPulse 1s ease-in-out infinite; }
+.typing-dots span:nth-child(2){ animation-delay:.18s; }
+.typing-dots span:nth-child(3){ animation-delay:.36s; }
+@keyframes dotPulse { 0%,100% { transform:translateY(0); opacity:.4; } 50% { transform:translateY(-3px); opacity:1; } }

@@ -3,6 +3,7 @@ import { LayoutGrid, List, Search, Check } from "lucide-react";
 import "./dashboard.css";
 import { frameworks, courses, userEnrollments, type FrameworkKey, type Course } from "./courses";
 import Sidebar, { type TabKey } from "./Sidebar";
+import StaticCapyCharacter from "@/components/StaticCapyCharacter";
 
 export default function Dashboard() {
     const [active, setActive] = useState<TabKey>("modules");
@@ -265,6 +266,9 @@ export default function Dashboard() {
                     <p>© 2025 CapyCode • Built for learners who refuse to quit</p>
                 </footer>
             </main>
+
+            {/* Static Character - Always visible */}
+            <StaticCapyCharacter />
         </div>
     );
 }
