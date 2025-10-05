@@ -1,0 +1,127 @@
+.speaking-capy-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 170px;
+  z-index: 9999; /* ensure on top of sandpack panes */
+  pointer-events: none;
+}
+/* Legacy styles removed. File kept intentionally empty as a stub. */
+.speaking-capy-avatar-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  filter: grayscale(100%) brightness(0.7);
+  transition: filter 280ms ease, transform 280ms ease, opacity 200ms ease;
+  opacity: .9;
+}
+
+.speaking-capy-avatar-wrapper.is-speaking {
+  filter: none;
+  opacity: 1;
+  animation: capyPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes capyPulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+}
+
+/* Twitch burst when speech starts */
+.speaking-capy-avatar-wrapper.twitch-start {
+  animation: capyTwitch 260ms ease; /* will be added in addition to pulse */
+}
+@keyframes capyTwitch {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(3deg) scale(1.03); }
+  50% { transform: rotate(-2deg) scale(0.98); }
+  75% { transform: rotate(1.5deg) scale(1.01); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.speaking-capy-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  drop-shadow: 0 4px 16px rgba(0,0,0,0.45);
+}
+
+.speaking-capy-bubble {
+  position: absolute;
+  right: 100%;
+  bottom: 40%;
+  transform: translateX(-12px);
+  background: linear-gradient(135deg, #1f2937 0%, #374151 60%, #4b5563 100%);
+  color: white;
+  padding: 0.65rem 0.85rem 0.75rem;
+  border-radius: 14px;
+  max-width: 260px;
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+  box-shadow: 0 8px 24px -6px rgba(0,0,0,0.55), 0 2px 6px -2px rgba(255,255,255,0.08) inset;
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px) saturate(140%);
+  opacity: 0;
+  transform-origin: bottom right;
+  animation: bubbleIn 220ms ease forwards;
+}
+
+@keyframes bubbleIn {
+  0% { opacity: 0; transform: translate(-12px, 6px) scale(.9); }
+  100% { opacity: 1; transform: translate(-12px,0) scale(1); }
+}
+
+.speaking-capy-bubble:after {
+  content: "";
+  position: absolute;
+  bottom: 14px;
+  right: -10px;
+  width: 0; height: 0;
+  border-left: 12px solid #374151;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  filter: brightness(1.1);
+}
+
+.speaking-capy-bubble.idle {
+  background: rgba(55,65,81,0.55);
+  color: #d1d5db;
+  border-color: rgba(255,255,255,0.08);
+}
+
+.speaking-capy-bubble .label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  opacity: .65;
+  margin-bottom: 2px;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 3px;
+  vertical-align: middle;
+}
+.typing-dots span {
+  width: 5px; height: 5px;
+  background: #9ca3af;
+  border-radius: 50%;
+  animation: dotPulse 1s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: .18s; }
+.typing-dots span:nth-child(3) { animation-delay: .36s; }
+@keyframes dotPulse {
+  0%, 100% { transform: translateY(0); opacity:.4; }
+  50% { transform: translateY(-3px); opacity:1; }
+}
+
+.fade-out-soft {
+  animation: fadeOutSoft 320ms ease forwards;
+}
+@keyframes fadeOutSoft {
+  to { opacity:0; transform: translate(-12px, 6px) scale(.92); }
+}

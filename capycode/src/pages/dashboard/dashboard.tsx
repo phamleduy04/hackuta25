@@ -5,6 +5,7 @@ import { frameworks, courses, userEnrollments, type Course } from "./courses";
 import Sidebar, { type TabKey } from "./Sidebar";
 import { useAuth0 } from "@auth0/auth0-react";
 import { FrameworkEnum } from "@/contexts/voice-context";
+import StaticCapyCharacter from "@/components/StaticCapyCharacter";
 
 export default function Dashboard() {
     const [active, setActive] = useState<TabKey>("modules");
@@ -281,6 +282,9 @@ export default function Dashboard() {
                     <p>© 2025 CapyCode • Built for learners who refuse to quit</p>
                 </footer>
             </main>
+
+            {/* Static Character - Always visible */}
+            <StaticCapyCharacter />
         </div>
     );
 }
