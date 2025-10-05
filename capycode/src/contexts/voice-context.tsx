@@ -55,7 +55,6 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         agentId: 'agent_7801k6re9566f1990zee8hcy45k3',
         connectionType: 'webrtc', // either "webrtc" or "websocket"
         onMessage: (message) => {
-            console.log("Message", message);
             window.dispatchEvent(new CustomEvent("conversation-message", {
                 detail: {
                     message: message,
@@ -67,16 +66,12 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
                 if (!Object.values(FrameworkEnum).includes(framework)) {
                     throw new Error("Invalid framework");
                 }
-                console.log("Framework", framework);
                 window.dispatchEvent(new CustomEvent("framework", {
                     detail: {
                         framework: framework,
                     }
                 }));
                 return "Framework set";
-            },
-            start_project: (project: string) => {
-                console.log("Project", project);
             },
             send_plan: (plan: string) => {
                 console.log("Plan", plan);
@@ -108,6 +103,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     }, [conversation.isSpeaking]);
 
     const startSession = () => {
+        console.log("Starting session");
         setConversationStatus("starting");
         conversation.startSession().then(() => {
             setConversationStatus("started");
@@ -159,26 +155,31 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
             redirectLink.current = event.detail.link;
         }
 
-        const handleMessage = (event: CustomEvent) => {
-            console.log("Message", event.detail.message);
-            setMessages([...messages, event.detail.message]);
-        }
-
         const handleFramework = (event: CustomEvent) => {
             console.log("Framework", event.detail.framework);
             setFramework(event.detail.framework);
         }
 
         window.addEventListener("load-session", loadSession as unknown as EventListener);
-        window.addEventListener("conversation-message", handleMessage as unknown as EventListener);
         window.addEventListener("framework", handleFramework as unknown as EventListener);
 
         return () => {
             window.removeEventListener("load-session", loadSession as unknown as EventListener);
-            window.removeEventListener("conversation-message", handleMessage as unknown as EventListener);
             window.removeEventListener("framework", handleFramework as unknown as EventListener);
         }
     }, []);
+
+    useEffect(() => {
+        console.log("Messages", messages);
+        const handleMessage = (event: CustomEvent) => {
+            console.log("Message", event.detail.message);
+            setMessages([...messages, event.detail.message]);
+        }
+        window.addEventListener("conversation-message", handleMessage as unknown as EventListener);
+        return () => {
+            window.removeEventListener("conversation-message", handleMessage as unknown as EventListener);
+        }
+    }, [messages]);
 
     const requestMic = (async () => {
         await navigator.mediaDevices.getUserMedia({ audio: true }).then(() => {

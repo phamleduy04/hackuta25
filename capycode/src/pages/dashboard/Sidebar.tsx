@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Library, User2 } from "lucide-react";
+import { useVoice } from "@/hooks/use-voice";
+import { Button } from "@/components/ui/button";
 
 export type TabKey = "modules" | "account";
 
@@ -18,6 +20,8 @@ function computeWidth(inner: number): number {
 
 export default function Sidebar({ active, onChange }: Props) {
   const [width, setWidth] = useState<number>(() => computeWidth(window.innerWidth));
+
+  const { startSession } = useVoice();
 
   useEffect(() => {
     const onResize = () => setWidth(computeWidth(window.innerWidth));
@@ -46,6 +50,7 @@ export default function Sidebar({ active, onChange }: Props) {
           <Library size={20} />
           <span>Modules</span>
         </button>
+        <Button onClick={startSession}>Start Session</Button>
       </nav>
 
       <div className="ld-account">
