@@ -9,4 +9,11 @@ export default defineSchema({
   numbers: defineTable({
     value: v.number(),
   }),
+
+  courses: defineTable({
+    name: v.string(),
+    description: v.string(),
+    prompt: v.string(),
+    logoURL: v.string(),
+  }), 
 });
